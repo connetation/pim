@@ -43,10 +43,11 @@ class TceFunc
      *
      * @return string The HTML code for the TCEform field
      */
-    public function getSingleField_selectCategories(array $parameter, FormEngine &$fObj)
+    //public function getSingleField_selectCategories(array $parameter, FormEngine &$fObj)
+    public function getSingleField_selectCategories(array $parameter, &$tmpfObj)
     {
-        $this->tceForms = &$parameter['pObj'];
-
+        //$this->tceForms = &$parameter['pObj'];
+        $this->tceForms = &$tmpfObj;
         $table = $parameter['table'];
         $field = $parameter['field'];
         $row = $parameter['row'];
@@ -111,7 +112,6 @@ class TceFunc
         $categoryTree->disallowClick($config['disallowClick']);
 
         $categoryTree->init();
-
         /**
          * Browse tree.
          *
@@ -122,7 +122,6 @@ class TceFunc
 
         // Render the tree
         $renderBrowseTrees->renderBrowsableMountTrees($categoryTree);
-
         $thumbnails = '';
         if (!$disabled) {
             // tree frame <div>
@@ -134,7 +133,6 @@ class TceFunc
         // if row['uid'] is defined and is an int we do display an existing record
         // otherwise it's a new record, so get default values
         $itemArray = array();
-
         if ((int) $row['uid']) {
             // existing Record
             switch ($table) {
@@ -217,12 +215,13 @@ class TceFunc
                 default:
             }
         }
-
+				
         // process selected values
         // Creating the label for the "No Matching Value" entry.
         $noMatchingValueLabel = isset($parameter['fieldTSConfig']['noMatchingValue_label']) ?
             $this->tceForms->sL($parameter['fieldTSConfig']['noMatchingValue_label']) :
-            '[ ' . $this->tceForms->getLL('l_noMatchingValue') . ' ]';
+            '[  ]';
+		//rmausz, ' . $this->tceForms->getLL('l_noMatchingValue') . '	
         $noMatchingValueLabel = @sprintf($noMatchingValueLabel, $parameter['itemFormElValue']);
 
         // Possibly remove some items:
@@ -249,10 +248,8 @@ class TceFunc
             $maxitems,
             'imgName' => $table . '_' . $row['uid'] . '_' . $field
         );
-
         $item = '<input type="hidden" name="' . $parameter['itemFormElName'] . '_mul" value="' .
             ($config['multiple'] ? 1 : 0) . '"' . $disabled . ' />';
-
         $params = array(
             'size' => $config['size'],
             'autoSizeMax' => \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($config['autoSizeMax'], 0),
@@ -261,8 +258,8 @@ class TceFunc
             'maxitems' => $maxitems,
             'info' => '',
             'headers' => array(
-                'selector' => $this->tceForms->getLL('l_selected') . ':<br />',
-                'items' => ($disabled ? '' : $this->tceForms->getLL('l_items') . ':<br />'),
+                'selector' => $this->getLL('l_selected') . ':<br />',
+                'items' => ($disabled ? '' : $this->getLL('l_items') . ':<br />'),
             ),
             'noBrowser' => true,
             'readOnly' => $disabled,
@@ -305,7 +302,7 @@ class TceFunc
 		</style>
 		';
 
-        $item .= $this->tceForms->dbFileIcons(
+        /*$item .= $this->tceForms->dbFileIcons(
             $parameter['itemFormElName'],
             $config['internal_type'],
             $config['allowed'],
@@ -313,17 +310,18 @@ class TceFunc
             '',
             $params,
             $parameter['onFocus']
-        );
+        );*/
 
         // Wizards:
         if (!$disabled) {
-            $specConf = $this->tceForms->getSpecConfFromString(
+            /*$specConf = $this->tceForms->getSpecConfFromString(
                 $parameter['extra'],
                 $parameter['fieldConf']['defaultExtras']
-            );
+            );*/
+						$specConf = \TYPO3\CMS\Backend\Utility\BackendUtility::getSpecConfParts($parameter['fieldConf']['defaultExtras']);
             $altItem = '<input type="hidden" name="' . $parameter['itemFormElName'] . '" value="' .
                 htmlspecialchars($parameter['itemFormElValue']) . '" />';
-            $item = $this->tceForms->renderWizards(
+            /*$item = $this->tceForms->renderWizards(
                 array($item, $altItem),
                 $config['wizards'],
                 $table,
@@ -332,9 +330,41 @@ class TceFunc
                 $parameter,
                 $parameter['itemFormElName'],
                 $specConf
-            );
+            );*/
         }
 
         return $item;
     }
+
+
+        /**
+         * Returns language label from locallang_core.xlf
+         * Labels must be prefixed with either "l_" or "m_".
+         * The prefix "l_" maps to the prefix "labels." inside locallang_core.xlf
+         * The prefix "m_" maps to the prefix "mess." inside locallang_core.xlf
+         *
+         * @param string $str The label key
+         * @return string The value of the label, fetched for the current backend language.
+         * @todo Define visibility
+         */
+        public function getLL($str) {
+                $content = '';
+                switch (substr($str, 0, 2)) {
+                        case 'l_':
+                                $content = $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:labels.' . substr($str, 2));
+                                break;
+                        case 'm_':
+                                $content = $this->getLanguageService()->sL('LLL:EXT:lang/locallang_core.xlf:mess.' . substr($str, 2));
+                                break;
+                }
+                return $content;
+        }
+				 /**
+         * @return LanguageService
+         */
+        protected function getLanguageService() {
+                return $GLOBALS['LANG'];
+        }
+				
+
 }

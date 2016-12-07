@@ -184,6 +184,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                 'type' => 'text',
                 'cols' => '30',
                 'rows' => '5',
+                /*
                 'wizards' => array(
                     '_PADDING' => 2,
                     'RTE' => array(
@@ -195,6 +196,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                         'script' => 'wizard_rte.php',
                     ),
                 ),
+				 */ 
             ),
         ),
         'images' => array(
@@ -221,6 +223,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                 'type' => 'text',
                 'cols' => '30',
                 'rows' => '5',
+                /*
                 'wizards' => array(
                     '_PADDING' => 2,
                     'RTE' => array(
@@ -232,6 +235,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                         'script' => 'wizard_rte.php',
                     ),
                 ),
+				*/
             ),
         ),
         'teaserimages' => array(
@@ -256,8 +260,9 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.categories',
             'config' => array(
-                'type' => 'group',
-                'internal_type' => 'passthrough',
+                //'type' => 'group',
+                //'internal_type' => 'passthrough',
+                'type' => 'user',
                 'allowed' => 'tx_commerce_categories',
                 'form_type' => 'user',
                 'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc->getSingleField_selectCategories',

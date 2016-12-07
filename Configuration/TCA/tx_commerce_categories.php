@@ -181,6 +181,7 @@ return array(
                 'type' => 'text',
                 'cols' => '30',
                 'rows' => '5',
+                /*
                 'wizards' => array(
                     '_PADDING' => 2,
                     'RTE' => array(
@@ -192,6 +193,7 @@ return array(
                         'script' => 'wizard_rte.php',
                     ),
                 ),
+				*/
             ),
         ),
         'images' => array(
@@ -235,8 +237,9 @@ return array(
             'label' =>
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.parent_category',
             'config' => array(
-                'type' => 'group',
-                'internal_type' => 'passthrough',
+                //'type' => 'group',
+                //'internal_type' => 'passthrough',
+                'type' => 'user',
                 'allowed' => 'tx_commerce_categories',
                 'form_type' => 'user',
                 'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc->getSingleField_selectCategories',

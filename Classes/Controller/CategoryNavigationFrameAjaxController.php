@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Sebastian Fischer <typo3@marketing-factory.de>
  */
-class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
+class CategoryNavigationFrameAjaxController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 {
     /**
      * Category tree.
@@ -98,112 +98,7 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         $this->categoryTree->init();
     }
 
-    /**
-     * Initializes the Page.
-     *
-     * @param bool $bare If TRUE only categories get rendered
-     *
-     * @return void
-     */
-    public function initPage($bare = false)
-    {
-        /**
-         * Document template.
-         *
-         * @var \TYPO3\CMS\Backend\Template\DocumentTemplate $doc
-         */
-        $doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-        $this->doc = $doc;
-        $this->doc->backPath = $this->getBackPath();
-        $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
-        $this->doc->showFlashMessages = false;
 
-        $this->doc->inDocStyles .= '
-        #typo3-pagetree .x-tree-root-ct ul {
-            padding-left: 19px;
-            margin: 0;
-        }
-
-        .x-tree-root-ct ul li.expanded ul {
-            background: url("' . $this->getBackPath() .
-                'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
-        }
-
-        .x-tree-root-ct ul li.expanded.last ul {
-            background: none;
-        }
-
-        .x-tree-root-ct li {
-            clear: left;
-            margin-bottom: 0;
-        }
-        ';
-
-        $currentSubScript = '';
-        if ($this->currentSubScript) {
-            $currentSubScript = 'top.currentSubScript = unescape("' . rawurlencode($this->currentSubScript) . '");';
-        }
-
-        $doHighlight = '';
-        if ($this->doHighlight) {
-            $doHighlight = 'hilight_row("row" + top.fsMod.recentIds["commerce"], highLightID);';
-        }
-
-        $formStyle = (!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) { linkObj.blur(); }');
-
-        // Setting JavaScript for menu.
-        $this->doc->JScode = $this->doc->wrapScriptTags(
-            $currentSubScript . '
-
-            function jumpTo(id, linkObj, highLightID, script) {
-                var theUrl;
-
-                if (script) {
-                    theUrl = top.TS.PATH_typo3 + script;
-									console.log("script: " + script);
-									console.log("Vlt. falsche Url in commerce/Classes/Controller/CategoryNavigationFrameController.php [164]");
-									alert("Bitte console.log checken!! (ARUB)");
-                } else {
-                    theUrl = top.currentSubScript;
-                }
-
-                theUrl = theUrl + id;
-
-
-                if (top.condensedMode) {
-                    top.content.document.location = theUrl;
-                } else {
-                    parent.list_frame.document.location = theUrl;
-                }
-                ' . $doHighlight . '
-                ' . $formStyle . '
-                return false;
-            }
-
-            // Call this function, refresh_nav(), from another script in the backend
-            // if you want to refresh the navigation frame (eg. after having changed
-            // a page title or moved pages etc.)
-            // See BackendUtility::getSetUpdateSignal()
-            function refresh_nav() {
-                window.setTimeout(\'Tree.refresh();\', 0);
-            }
-
-            '
-        );
-
-        $this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-        $this->doc->loadJavascriptLib('js/tree.js');
-        $this->doc->JScode .= $this->doc->wrapScriptTags('
-            Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse' .
-            ($bare ? 'WithoutProduct' : '') . '";
-        ');
-
-        // Adding javascript code for AJAX (prototype), drag&drop and the
-        // pagetree as well as the click menu code
-        $this->doc->getContextMenuCode();
-
-        $this->doc->bodyTagId = 'typo3-pagetree';
-    }
 
     /**
      * Main method.
@@ -223,21 +118,6 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         $this->content .= $tree;
 
         $docHeaderButtons = $this->getButtons();
-
-        $markers = array(
-            'CONTENT' => $this->content,
-        );
-
-        $subparts = array();
-        // Build the <body> for the module
-        $this->content = $this->doc->startPage(
-            $this->getLanguageService()->sl(
-                'LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:mod_category.navigation_title'
-            )
-        );
-        $this->content .= $this->doc->moduleBody('', $docHeaderButtons, $markers, $subparts);
-        $this->content .= $this->doc->endPage();
-        $this->content = $this->doc->insertStylesAndJS($this->content);
     }
 
     /**

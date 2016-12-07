@@ -43,7 +43,7 @@
 							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.product_name</label>
 							<config>
 								<type>select</type>
-								<itemsProcFunc>\CommerceTeam\Commerce\Utility\TceformsUtility->productsSelector</itemsProcFunc>
+								<itemsProcFunc>CommerceTeam\Commerce\Utility\TceformsUtility->productsSelector</itemsProcFunc>
 								<foreign_table>tx_commerce_products</foreign_table>
 								<size>1</size>
 								<minitems>0</minitems>
@@ -51,7 +51,7 @@
 							</config>
 						</TCEforms>
 					</product_id>
-					<StartCategory>
+					<!-- StartCategory>
 						<TCEforms>
 							<exclude>1</exclude>
 							<label>LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:tx_commerce_pi1.pi_flexform.category_selection</label>
@@ -69,7 +69,7 @@
 								<maxitems>1</maxitems>
 							</config>
 						</TCEforms>
-					</StartCategory>
+					</StartCategory -->
 				</el>
 			</ROOT>
 		</s_product>

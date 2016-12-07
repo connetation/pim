@@ -20,4 +20,5 @@ $MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/local
 $MCONF['access'] = 'user,group';
 $MCONF['name'] = 'commerce_category';
 // $MCONF['navigationComponentId'] = 'category-navframe';
-$MCONF['navFrameScript'] = '../CategoryNavigationFrame/index.php';
+$MCONF['navFrameScript'] = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('commerce_Tree');
+//$MCONF['navFrameScript'] = '/typo3/index.php?M=commerce_Tree&moduleToken=a8151b71e67a899e39e08f275c85bda62bda9c4d';

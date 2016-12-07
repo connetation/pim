@@ -12,25 +12,16 @@
  *
  * The TYPO3 project - inspiring people to share!
  */
-require_once('conf.php');
-define('TYPO3_MOD_PATH', '../typo3conf/ext/commerce/Modules/CategoryNavigationFrame/');
-$BACK_PATH = '../../../../../typo3/';
-/** @noinspection PhpIncludeInspection */
-require_once($BACK_PATH . 'init.php');
 
-// Make instance if it is not an AJAX call
-if (!(defined('TYPO3_REQUESTTYPE') && defined('TYPO3_REQUESTTYPE_AJAX')) ||
-    !(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)
-) {
-    /**
-     * Category navigation frame controller.
-     *
-     * @var \CommerceTeam\Commerce\Controller\CategoryNavigationFrameController $categoryNavigationFrameController
-     */
-    $categoryNavigationFrameController = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-        'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController'
-    );
-    $categoryNavigationFrameController->initPage();
-    $categoryNavigationFrameController->main();
-    $categoryNavigationFrameController->printContent();
-}
+/**
+ * Category navigation frame controller.
+ *
+ * @var \CommerceTeam\Commerce\Controller\CategoryNavigationFrameController $categoryNavigationFrameController
+ */
+$categoryNavigationFrameController = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+    'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController'
+);
+
+$categoryNavigationFrameController->initPage();
+$categoryNavigationFrameController->main();
+$categoryNavigationFrameController->printContent();

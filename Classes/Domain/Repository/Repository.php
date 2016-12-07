@@ -346,7 +346,8 @@ class Repository
         if (TYPO3_MODE === 'FE') {
             $result = $GLOBALS['TSFE']->sys_page->enableFields($tableName, $showHiddenRecords);
         } else {
-            $result = t3lib_BEfunc::BEenableFields($tableName);
+            //$result = \t3lib_BEfunc::BEenableFields($tableName);
+            $result = \TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields($tableName);
         }
 
         if ($replace != '') {

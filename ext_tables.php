@@ -90,6 +90,20 @@ if (TYPO3_MODE == 'BE') {
         PATH_TXCOMMERCE . 'Modules/Systemdata/'
     );
 
+    // Category-Tree module
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+        'commerce',
+        'Tree',
+        '',
+        PATH_TXCOMMERCE . 'Modules/CategoryNavigationFrame/'
+    );
+		/*
+		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler (
+			'Commerce::categoryNavigationFrame',
+			'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController->backDownAlbum'
+		);
+		*/
+
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
         'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct',

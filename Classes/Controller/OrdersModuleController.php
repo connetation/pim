@@ -37,7 +37,7 @@ class OrdersModuleController extends \TYPO3\CMS\Recordlist\RecordList
      *
      * @var string
      */
-    protected $body;
+    public $body;
 
     /**
      * Order pid.

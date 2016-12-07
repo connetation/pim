@@ -209,6 +209,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
                 'type' => 'text',
                 'cols' => '30',
                 'rows' => '5',
+                /*
                 'wizards' => array(
                     '_PADDING' => 2,
                     'RTE' => array(
@@ -220,6 +221,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
                         'script' => 'wizard_rte.php',
                     ),
                 ),
+				*/
             ),
         ),
         'plain_text' => array(
