@@ -4,7 +4,7 @@
 	"description": "TYPO3 commerce shopping system",
 	"homepage": "https://github.com/CommerceTeam/commerce/",
 	"license": ["GPL-2.0+"],
-	"version": "4.0.0",
+	"version": "4.0.3",
 
 	"support" : {
 		"issues" : "https://forge.typo3.org/projects/extension-commerce/issues"
@@ -14,26 +14,38 @@
 		"commerce",
 		"eCommerce"
 	],
-	
 	"replace": {
 		"commerce": "self.version",
 		"typo3-ter/commerce": "self.version"
 	},
 	"require": {
-		"typo3/cms-core": "*",
-		"tt_address": ">= 3.0",
-		"dynaflex": ">= 2.0",
-		"static_info_tables": ">= 6.2.0"
+		"typo3/cms": "^6.2.14|^7.6.0|dev-master",
+		"friendsoftypo3/tt-address": ">= 3.0",
+		"typo3-ter/dynaflex": ">= 2.0",
+		"sjbr/static-info-tables": ">= 6.2.0"
+	},
+	"require-dev": {
+		"namelesscoder/typo3-repository-client": "^1.2.0"
 	},
 	"autoload": {
 		"psr-4": {
 			"CommerceTeam\\Commerce\\": "Classes/"
 		}
 	},
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/CommerceTeam/commerce.git"
+	"config": {
+		"vendor-dir": ".Build/vendor",
+		"bin-dir": ".Build/bin"
+	},
+	"extra": {
+		"typo3/cms": {
+			"cms-package-dir": "{$vendor-dir}/typo3/cms",
+			"web-dir": ".Build/Web"
 		}
+	},
+	"repositories": [
+	        {
+        		"type": "composer",
+            		"url": "https://composer.typo3.org/"
+        	}
 	]
 }
