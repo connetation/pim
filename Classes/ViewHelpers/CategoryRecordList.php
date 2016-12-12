@@ -1441,7 +1441,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
                     $cells['delete'] = '<a href="#" onclick="' .
                         htmlspecialchars(
                             'if (confirm(' .
-                            $language->JScharCode(
+                            GeneralUtility::quoteJSvalue(
                                 $language->getLL('deleteWarning') .
                                 ' "' . $title . '" ' . $refCountMsg
                             ) . ')) {jumpToUrl(\'' .

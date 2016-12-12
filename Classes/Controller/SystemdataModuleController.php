@@ -437,7 +437,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                 IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', true))) .
                 '</a>';
             $output .= '<a href="#" onclick="' . htmlspecialchars(
-                'if (confirm(' . $language->JScharCode(
+                'if (confirm(' . GeneralUtility::quoteJSvalue(
                     $language->getLL('deleteWarningManufacturer') . ' "' . $attribute['title'] . '" ' . $refCountMsg
                 ) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
             ) . '">' .
@@ -534,7 +534,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                 IconUtility::getSpriteIcon('actions-document-open', array('title' => $language->getLL('edit', true))) .
                 '</a>';
             $output .= '<a href="#" onclick="' . htmlspecialchars(
-                'if (confirm(' . $language->JScharCode(
+                'if (confirm(' . GeneralUtility::quoteJSvalue(
                     $language->getLL('deleteWarningManufacturer') . ' "' . htmlspecialchars($row['title']) . '" ' .
                     $refCountMsg
                 ) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'
@@ -612,7 +612,7 @@ class SystemdataModuleController extends \TYPO3\CMS\Backend\Module\BaseScriptCla
                     array('title' => $language->getLL('edit', true))
                 ) . '</a>';
             $output .= '<a href="#" onclick="' . htmlspecialchars(
-                'if (confirm(' . $language->JScharCode(
+                'if (confirm(' . GeneralUtility::quoteJSvalue(
                     $language->getLL('deleteWarningSupplier') . ' "' . htmlspecialchars($row['title']) .
                     '" ' . $refCountMsg
                 ) . ')) {jumpToUrl(\'' . $this->doc->issueCommand($deleteParams, -1) . '\');} return false;'

@@ -80,7 +80,7 @@ class OrderTree extends \TYPO3\CMS\Backend\Tree\View\BrowseTreeView
 
         // If the record is locked, present a warning sign.
         if (($lockInfo = \TYPO3\CMS\Backend\Utility\BackendUtility::isRecordLocked('pages', $row['uid']))) {
-            $aOnClick = 'alert(' . $language->JScharCode($lockInfo['msg']) . ');return false;';
+            $aOnClick = 'alert(' . GeneralUtility::quoteJSvalue($lockInfo['msg']) . ');return false;';
             $lockIcon = '<a href="#" onclick="' . htmlspecialchars($aOnClick) . '">' .
                 \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon(
                     'status-warning-in-use',

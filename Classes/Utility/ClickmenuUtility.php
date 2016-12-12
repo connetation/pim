@@ -562,7 +562,7 @@ class ClickmenuUtility extends ClickMenu
         );
 
         if ($backendUser->jsConfirmation(2)) {
-            $conf = $loc . ' && confirm(' . $language->JScharCode(
+            $conf = $loc . ' && confirm(' . GeneralUtility::quoteJSvalue(
                 sprintf(
                     $language->sL(
                         'LLL:EXT:commerce/Resources/Private/Language/locallang_treelib.xml:clickmenu.overwriteConfirm'
