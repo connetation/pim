@@ -87,8 +87,15 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @return array all available buttons as an assoc. array
      */
-    public function getButtons(array $row)
+    public function getButtons()
     {
+    	$row = func_get_args();
+		if(! empty($row)) {
+			$row = $row[0];
+		} else {
+			$row = [];
+		}
+
         $language = $this->getLanguageService();
 
         $buttons = array(
@@ -242,7 +249,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @throws \UnexpectedValueException If hook was of wrong interface
      */
-    public function getTable($table, $id, $rowlist)
+    public function getTable($table, $id, $rowlist = '')
     {
         $database = $this->getDatabaseConnection();
         $language = $this->getLanguageService();
@@ -768,7 +775,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @return string HTML content for the table row
      */
-    public function addElement($h, $icon, array $data, $trParams = '', $lMargin = '', $altLine = '')
+    public function addElement($h, $icon, $data, $trParams = '', $lMargin = '', $altLine = '', $colType = 'td')
     {
         $noWrap = ($this->no_noWrap) ? '' : ' nowrap="nowrap"';
 
@@ -864,7 +871,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @throws \UnexpectedValueException If hook was of wrong interface
      */
-    public function renderListHeader($table, array $currentIdList)
+    public function renderListHeader($table, $currentIdList)
     {
         $language = $this->getLanguageService();
         $tableConfig = SettingsFactory::getInstance()->getTcaValue($table);
@@ -1167,7 +1174,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @throws \UnexpectedValueException If hook was of wrong interface
      */
-    public function makeControl($table, array $row)
+    public function makeControl($table, $row)
     {
         $backendUser = $this->getBackendUser();
         $language = $this->getLanguageService();
@@ -1560,7 +1567,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @throws \UnexpectedValueException If hook was of wrong interface
      */
-    public function makeClip($table, array $row)
+    public function makeClip($table, $row)
     {
         $language = $this->getLanguageService();
 
@@ -1694,7 +1701,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @return array Array with key 0/1 with content for column 1 and 2
      */
-    public function makeLocalizationPanel($table, array $row)
+    public function makeLocalizationPanel($table, $row)
     {
         $backendUser = $this->getBackendUser();
 
@@ -1822,7 +1829,7 @@ class CategoryRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecord
      *
      * @return string The item title. Ready for HTML output
      */
-    public function linkWrapItems($table, $uid, $code, array $row)
+    public function linkWrapItems($table, $uid, $code, $row)
     {
         $language = $this->getLanguageService();
         $backendUser = $this->getBackendUser();

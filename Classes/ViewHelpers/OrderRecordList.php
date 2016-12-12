@@ -123,9 +123,16 @@ class OrderRecordList extends \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordLis
      *
      * @return array all available buttons as an assoc. array
      */
-    public function getButtons(array $row)
+    public function getButtons()
     {
-        $language = $this->getLanguageService();
+       	$row = func_get_args();
+		if(! empty($row)) {
+			$row = $row[0];
+		} else {
+			$row = [];
+		}
+
+	    $language = $this->getLanguageService();
 
         $buttons = array(
             'csh' => '',
