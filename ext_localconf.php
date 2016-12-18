@@ -163,6 +163,15 @@ if (TYPO3_MODE == 'BE') {
                 '/Resources/Private/Language/locallang_be.xml:tx_commerce_task_statistictask.description',
             'additionalFields' => 'CommerceTeam\\Commerce\\Task\\StatisticTaskAdditionalFieldProvider',
         );
+
+
+
+   /*
+    * Add FancyTree JavaScrit to backend.
+    * To be used as roduct tree and category chooser.
+    */
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess'][]
+        = PATH_TXCOMMERCE . 'Classes/Hook/PageRenderer.php:CommerceTeam\\Commerce\\Hooks\\PageRenderer->addJSCSS';
 }
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['renderPreProcess']['commerce'] =

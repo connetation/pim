@@ -14,7 +14,7 @@ namespace CommerceTeam\Commerce\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Backend\Form\FormEngine;
+use TYPO3\CMS\Backend\Form\Element\UserElement;
 use TYPO3\CMS\Backend\Utility\BackendUtility as CoreBackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -304,12 +304,13 @@ class ArticleCreatorUtility
      * Create a matrix of producible articles.
      *
      * @param array $parameter Parameter
-     * @param FormEngine $fObj Form engine
+     * @param UserElement $fObj Form engine
      *
      * @return string A HTML-table with checkboxes and all needed stuff
      */
-    public function producibleArticles(array $parameter, FormEngine $fObj)
+    public function producibleArticles(array $parameter, UserElement $fObj)
     {
+    	$langService = GeneralUtility::makeInstance('TYPO3\\CMS\\Lang\\LanguageService');
         $this->uid = (int) $parameter['row']['uid'];
         $this->pid = (int) $parameter['row']['pid'];
 
@@ -326,7 +327,7 @@ class ArticleCreatorUtility
         $rowCount = $this->calculateRowCount();
         if ($rowCount > 1000) {
             return sprintf(
-                $fObj->sL(
+                $langService->sL(
                     'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.to_many_articles'
                 ),
                 $rowCount
@@ -340,7 +341,7 @@ class ArticleCreatorUtility
 
         $valueMatrix = (array) $this->getValues();
         $counter = 0;
-        $resultRows = $fObj->sL(
+        $resultRows = $langService->sL(
             'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.create_warning'
         );
 
@@ -348,7 +349,7 @@ class ArticleCreatorUtility
 
         $emptyRow = '<tr><td><input type="checkbox" name="createList[empty]" /></td>';
         $emptyRow .= '<td colspan="' . ($colCount - 1) . '">' .
-            $fObj->sL(
+            $langService->sL(
                 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.empty_article'
             ) .
             '</td></tr>';
@@ -368,7 +369,7 @@ class ArticleCreatorUtility
             $onClick = 'onclick="updateArticleList()"';
             $selectAllRow = '<tr><td><input type="checkbox" id="selectAllArticles" ' . $onClick . '/></td>';
             $selectAllRow .= '<td colspan="' . ($colCount - 1) . '">' .
-                $fObj->sL(
+                $langService->sL(
                     'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.select_all_articles'
                 ) .
                 '</td></tr>';

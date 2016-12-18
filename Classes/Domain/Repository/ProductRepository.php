@@ -129,7 +129,7 @@ class ProductRepository extends Repository
      *
      * @return array of Article UID
      */
-    public function getAttributes($uid, $correlationtypes)
+    public function getAttributes($uid, $correlationtypes = NULL)
     {
         $return = false;
         if ((int) $uid) {

@@ -14,7 +14,6 @@ namespace CommerceTeam\Commerce\Tree;
  * The TYPO3 project - inspiring people to share!
  */
 
-use CommerceTeam\Commerce\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -25,280 +24,225 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author 2008-2011 Erik Frister <typo3@marketing-factory.de>
  */
-class CategoryTree extends Browsetree
-{
-    /**
-     * Set the Tree Name.
-     *
-     * @var string
-     */
-    protected $treeName = 'txcommerceCategoryTree';
+class CategoryTree {
 
     /**
-     * Should the tree be only Categories? Or also Products and Articles?
+     * pageRepository
      *
-     * @var bool
+     * @var \TYPO3\CMS\Frontend\Page\PageRepository
      */
-    protected $bare = true;
+    protected $pageRepository;
 
-    /**
-     * Min category permission.
-     *
-     * @var string
-     */
-    protected $minCategoryPerms = 'show';
 
-    /**
-     * No click list.
-     *
-     * @var string
-     */
-    protected $noClickList = '';
 
-    /**
-     * Simple mode.
-     *
-     * @var bool
-     */
-    protected $simpleMode = false;
+	protected $tree = array();
 
-    /**
-     * If tree gets rendered in navigation frame
-     *
-     * @var bool
-     */
-    protected $isNavigationFrame = false;
+	protected $nodeDataCollection = array();
 
-    /**
-     * Initializes the Categorytree.
-     *
-     * @return void
-     */
-    public function init()
-    {
-        parent::init();
 
-        // Create the category leaf
-        /**
-         * Category leaf.
-         *
-         * @var \CommerceTeam\Commerce\Tree\Leaf\Category $categoryLeaf
-         */
-        $categoryLeaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Category');
 
-        // Instantiate the categorydata, -view and set
-        // the permission mask (or the string rep.)
-        /**
-         * Category data.
-         *
-         * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryData $categorydata
-         */
-        $categorydata = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryData');
-        $categorydata->setPermsMask(BackendUtility::getPermMask($this->minCategoryPerms));
+	protected $showProducts = true;
 
-        /**
-         * Category view.
-         *
-         * @var \CommerceTeam\Commerce\Tree\Leaf\CategoryView $categoryview
-         */
-        $categoryview = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\CategoryView');
-        // disable the root onclick if the perms are set to editcontent
-        // this way we cannot select the root as a parent for any content item
-        $categoryview->noRootOnclick(($this->minCategoryPerms == 'editcontent'));
+	protected $showArticles = true;
 
-        // Configure real values
-        if (!$this->isNavigationFrame) {
-            $categoryview->substituteRealValues();
-        }
 
-        // Configure the noOnclick for the leaf
-        if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Category')) {
-            $categoryview->noOnclick();
-        }
 
-        $categoryLeaf->initBasic($categoryview, $categorydata);
 
-        $this->addLeaf($categoryLeaf);
 
-        // Add Product and Article Leafs if wanted
-        // - Productleaf will be added to Categoryleaf,
-        // - Articleleaf will be added to Productleaf
-        if (!$this->bare) {
-            /**
-             * Product leaf.
-             *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Product $productleaf
-             */
-            $productleaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Product');
-            /**
-             * Article leaf.
-             *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\Article $articleleaf
-             */
-            $articleleaf = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\Article');
-
-            /**
-             * Product view.
-             *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\ProductView $productview
-             */
-            $productview = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductView');
-
-            // Configure the noOnclick for the leaf
-            if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Product')) {
-                $productview->noOnclick();
-            }
-
-            /**
-             * Article view.
-             *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\ArticleView $articleview
-             */
-            $articleview = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ArticleView');
-
-            // Configure the noOnclick for the leaf
-            if (GeneralUtility::inList($this->noClickList, 'CommerceTeam\\Commerce\\Tree\\Leaf\\Article')) {
-                $articleview->noOnclick();
-            }
-
-            // Configure real values
-            if (!$this->isNavigationFrame) {
-                $productview->substituteRealValues();
-                $articleview->substituteRealValues();
-            }
-
-            /**
-             * Product data.
-             *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\ProductData $productData
-             */
-            $productData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ProductData');
-            $productleaf->initBasic($productview, $productData);
-
-            /**
-             * Article data.
-             *
-             * @var \CommerceTeam\Commerce\Tree\Leaf\ArticleData $articleData
-             */
-            $articleData = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\Leaf\\ArticleData');
-            $articleleaf->initBasic($articleview, $articleData);
-
-            $categoryLeaf->addLeaf($productleaf);
-
-                // Do not show articles in simple mode.
-            if (!$this->simpleMode) {
-                $productleaf->addLeaf($articleleaf);
-            }
-        }
+    public function __construct() {
+        $this->pageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
     }
 
-    /**
-     * Sets the minimum Permissions needed for the Category Leaf
-     * Must be called BEFORE calling init.
-     *
-     * @param string $perm String-Representation of the right.
-     *     Can be 'show, new, delete, editcontent, cut, move, copy, edit'
-     *
-     * @return void
-     */
-    public function setMinCategoryPerms($perm)
-    {
-        if (!$this->isInit) {
-            // store the string and let it be added once init is called
-            $this->minCategoryPerms = $perm;
-        }
-    }
 
-    /**
-     * Sets the noclick list for the leafs.
-     *
-     * @param string $noClickList Comma-separated list
-     *     of leafs to disallow clicks
-     *
-     * @return void
-     */
-    public function disallowClick($noClickList = '')
-    {
-        $this->noClickList = $noClickList;
-    }
 
-    /**
-     * Sets the tree's Bare Mode - bare means only category leaf is added.
-     *
-     * @param bool $bare Flag
-     *
-     * @return void
-     */
-    public function setBare($bare = true)
-    {
-        if (!is_bool($bare)) {
-            // only issue warning but transform the value to bool anyways
-            if (TYPO3_DLOG) {
-                GeneralUtility::devLog('Bare-Mode of the tree was set with a non-bool flag!', COMMERCE_EXTKEY, 2);
+	/**
+	 * Initializes the Categorytree.
+	 *
+	 * @return void
+	 */
+	public function generateTree() {
+
+		$this->tree = [
+			'refKey'       => '0',
+			'type'         => 'root',
+			'extraClasses' => 'root',
+			'title'        => 'Category',
+			'folder'       => 'true',
+			'children'     => [],
+		];
+
+		$this->addTreeData('tx_commerce_categories', 'tx_commerce_categories', 'tx_commerce_categories_parent_category_mm');
+
+		if ($this->showProducts) {
+			$this->addTreeData('tx_commerce_products', 'tx_commerce_categories', 'tx_commerce_products_categories_mm');
+
+			if ($this->showArticles) {
+				$this->addArticles();
+			}
+		}
+
+	}
+
+
+	public function preSelect($tableName2UIDs) {
+		foreach ($tableName2UIDs as $tableName => $selUIDs) {
+			foreach ($selUIDs as $selUID) {
+				if ($selUID != 0) {
+					if (isset($this->nodeDataCollection[$tableName][$selUID])) {
+						$this->nodeDataCollection[$tableName][$selUID]['selected'] = true;
+					} else {
+						throw new \Exception("Could not pre-select '$tableName' with UID '$selUID'. Not found!", 1);
+					}
+				}
+			}
+		}
+	}
+
+
+	public function preExpanded($tableName2UIDs) {
+		foreach ($tableName2UIDs as $tableName => $selUIDs) {
+			foreach ($selUIDs as $selUID) {
+				if (isset($this->nodeDataCollection[$tableName][$selUID])) {
+					$this->nodeDataCollection[$tableName][$selUID]['expanded'] = true;
+				} else {
+					throw new \Exception("Could not pre-select '$tableName' with UID '$selUID'. Not found!", 1);
+				}
+			}
+		}
+	}
+
+
+	protected function addTreeData($tableName, $parentTableName, $mmTableName, $nmWhere) {
+        $nodeDataRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'uid, title, hidden',
+            $tableName,
+            'sys_language_uid = 0' . $this->pageRepository->deleteClause($tableName)
+        );
+
+		while ($nodeData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($nodeDataRes)) {
+			$this->nodeDataCollection[$tableName][$nodeData['uid']] = $this->getNodeFromData($tableName, $nodeData);
+		}
+
+
+        $resMM = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local, uid_foreign, sorting', $mmTableName, $nmWhere, '', 'uid_foreign, sorting');
+
+        while ($mm = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resMM)) {
+            if (isset($this->nodeDataCollection[$tableName][$mm['uid_local']])) {
+                if ($mm['uid_foreign'] == 0) {
+                    $this->tree['children'][] = & $this->nodeDataCollection[$tableName][$mm['uid_local']];
+                } else {
+                    $this->nodeDataCollection[$parentTableName][$mm['uid_foreign']]['children'][] = & $this->nodeDataCollection[$tableName][$mm['uid_local']];
+                }
             }
         }
-        $this->bare = $bare;
-    }
+	}
 
-    /**
-     * Sets if we are running in simple mode.
-     *
-     * @param int $simpleMode SimpleMode
-     *
-     * @return void
-     */
-    public function setSimpleMode($simpleMode = 1)
-    {
-        $this->simpleMode = $simpleMode;
-    }
 
-    /**
-     * Setter
-     *
-     * @param $isNavigationFrame
-     *
-     * @return void
-     */
-    public function setNavigationFrame($isNavigationFrame)
-    {
-        $this->isNavigationFrame = $isNavigationFrame;
-    }
+	protected function addArticles() {
+		$tableName = 'tx_commerce_articles';
+        $nodeDataRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+            'uid, title, hidden, uid_product',
+            $tableName,
+            'sys_language_uid = 0' . $this->pageRepository->deleteClause($tableName)
+        );
 
-    /**
-     * Returns the record of the category with the corresponding uid
-     * Categories must have been loaded already - the DB is NOT queried.
-     *
-     * @param int $uid Uid of the category
-     *
-     * @return array record
-     */
-    public function getCategory($uid)
-    {
-        // test parameters
-        if (!is_numeric($uid)) {
-            if (TYPO3_DLOG) {
-                GeneralUtility::devLog(
-                    'getCategory (categorytree) gets passed invalid parameters.',
-                    COMMERCE_EXTKEY,
-                    3
-                );
+		while ($nodeData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($nodeDataRes)) {
+			$this->nodeDataCollection[$tableName][$nodeData['uid']] = $this->getNodeFromData($tableName, $nodeData);
+
+            if (isset($this->nodeDataCollection['tx_commerce_products'][$nodeData['uid_product']])) {
+            	$this->nodeDataCollection['tx_commerce_products'][$nodeData['uid_product']]['children'][] = & $this->nodeDataCollection[$tableName][$nodeData['uid']];
+            } else {
+                // TODO: throw \Exception ??!?
             }
+		}
+	}
 
-            return array();
-        }
 
-        $categoryLeaf = $this->getLeaf(0);
+	protected function getNodeFromData($tableName, $data) {
+		$node = array();
+		$node['refKey'] = $tableName . '|' . $data['uid'];
+		$node['title']  = $data['title'];
+		$node['type']   = $tableName;
+		$node['uid']    = $data['uid'];
 
-        // check if there is a category leaf
-        if (is_null($categoryLeaf)) {
-            if (TYPO3_DLOG) {
-                GeneralUtility::devLog('getCategory (categorytree) cannot find the category leaf.', COMMERCE_EXTKEY, 3);
-            }
+		if($tableName == 'tx_commerce_categories') {
+			$node['folder'] = true;
+			$node['extraClasses'] = 'category';
+		} else if ($tableName == 'tx_commerce_products') {
+			$node['folder'] = false;
+			$node['extraClasses'] = 'product';
+		} else if ($tableName == 'tx_commerce_articles') {
+			$node['folder'] = false;
+			$node['extraClasses'] = 'article';
 
-            return array();
-        }
+		} else {
+			throw new \Exception("Could not generate node from data. Unknown table name '$tableName'!", 1);
+		}
 
-        // return the record
-        return $categoryLeaf->data->getChildByUid($uid);
-    }
+
+		if ($data['hidden']) {
+			$node['extraClasses'] .= ' is-hidden';
+		}
+
+		return $node;
+	}
+
+
+
+
+	public function getShowProducts() {
+		return $this->showProducts;
+	}
+
+	public function setShowProducts($showProducts) {
+		$this->showProducts = !!$showProducts;
+		return $this;
+	}
+
+
+
+	public function getShowArticles() {
+		return $this->showArticles;
+	}
+
+	public function setShowArticles($showArticles) {
+		$this->showArticles = !!$showArticles;
+		return $this;
+	}
+
+
+
+
+	public function getRenderedTCACategoryChooser($parameter) {
+		if (empty($this->tree)) {
+			$this->generateTree();
+		}
+		$this->preSelect([
+			'tx_commerce_categories' => explode(',', $parameter['itemFormElValue'])
+		]);
+        return '<input type="text" id="' . $parameter['itemFormElID'] . '" name="' . $parameter['itemFormElName'] . '" value="' . $parameter['itemFormElValue'] . '" />'
+        	. '<div data-input-id="' . $parameter['itemFormElID'] . '" class="tca-fancy-tree">'
+        		. '<script type="application/json" class="fancy-tree-data">' . json_encode($this->tree) . '</script>'
+        	. '</div>'
+            //. '<pre>' . var_export($this->tree, true) . '</pre><pre>' . var_export($parameter, true) . '</pre>'
+		;
+	}
+
+
+
+
+	public function getTreeJSON() {
+		if (empty($this->tree)) {
+			$this->generateTree();
+		}
+
+		$treeState = unserialize($GLOBALS['BE_USER']->uc['commerceNavTreeState']);
+		$this->preExpanded($treeState);
+
+		return json_encode([
+			'recordEdit' => \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('record_edit'),
+			'productPID' => \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid(),
+			'children'   => [$this->tree]
+		]);
+	}
 }

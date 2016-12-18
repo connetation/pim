@@ -1,0 +1,68 @@
+#typo3-commercecategory,
+#typo3-commercecategory > .x-panel-bwrap,
+#typo3-commercecategory > .x-panel-bwrap > .x-panel-body {
+	height: 100%;
+}
+
+#commerce-navigation-top-panel {
+	position: fixed;
+    height: 65px;
+    width: 100%;
+    top: 0;
+    left: 0;
+    min-height: 65px;
+    z-index: 300;
+    background-color: #eeeeee;
+    border-bottom: 1px solid #c3c3c3;
+    padding: 0 12px;
+    transition: margin-top 0.3s ease-in-out;
+}
+
+#commerce-navigation-top-panel-top,
+#commerce-navigation-top-panel-bottom {
+	margin: 4px 0;
+    min-height: 26px;
+}
+
+#commerce-navigation-refresh {
+	padding: 4px 4px;
+	font-size: 11px;
+	line-height: 1.5;
+	border-radius: 2px;
+	color: #333333;
+	background-color: #eeeeee;
+	display: inline-block;
+	margin-bottom: 0;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	border: 1px solid #bbbbbb;
+	float: right;
+}
+
+#commerce-navigation-refresh:hover {
+	background-color: #d5d5d5;
+	border-color: #9c9c9c;
+}
+
+#commerce-nav-tree-filter {
+	width: 100%;
+}
+
+
+#commerce-navigation-tree-wrap {
+	overflow: scroll;
+	height: 100%;
+	padding: 12px;
+	margin-top: 65px;
+}
+
+#commerce-navigation-tree {
+	height: 100%;
+}
+
+#commerce-navigation-tree > ul.fancytree-container {
+	height: 100%;
+}

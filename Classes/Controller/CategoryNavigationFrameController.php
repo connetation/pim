@@ -27,54 +27,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 {
     /**
-     * Category tree.
-     *
-     * @var \CommerceTeam\Commerce\Tree\CategoryTree
-     */
-    protected $categoryTree;
-
-    /**
-     * Current sub script.
-     *
-     * @var string
-     */
-    protected $currentSubScript;
-
-    /**
-     * Do highlight.
-     *
-     * @var bool
-     */
-    protected $doHighlight;
-
-    /**
-     * Has filter box.
-     *
-     * @var bool
-     */
-    protected $hasFilterBox;
-
-    /**
      * Constructor
      *
      * @return self
      */
-    public function __construct()
-    {
-        $GLOBALS['SOBE'] = $this;
-        $this->init();
-    }
-
-    /**
-     * Setter for currentSubScript.
-     *
-     * @param string $currentSubScript Current sub script
-     *
-     * @return void
-     */
-    public function setCurrentSubScript($currentSubScript)
-    {
-        $this->currentSubScript = $currentSubScript;
+    public function __construct() {
+		$GLOBALS['SOBE'] = $this;
+		$this->init();
     }
 
     /**
@@ -89,13 +48,6 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         $this->getLanguageService()->includeLLFile(
             'EXT:commerce/Resources/Private/Language/locallang_mod_category.xml'
         );
-
-        // Get the Category Tree
-        $this->categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
-        $this->categoryTree->setBare($bare);
-        $this->categoryTree->setSimpleMode((int) SettingsFactory::getInstance()->getExtConf('simpleMode'));
-        $this->categoryTree->setNavigationFrame(true);
-        $this->categoryTree->init();
     }
 
     /**
@@ -105,8 +57,7 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
      *
      * @return void
      */
-    public function initPage($bare = false)
-    {
+    public function initPage($bare = false) {
         /**
          * Document template.
          *
@@ -118,91 +69,15 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
         $this->doc->setModuleTemplate('EXT:commerce/Resources/Private/Backend/mod_navigation.html');
         $this->doc->showFlashMessages = false;
 
-        $this->doc->inDocStyles .= '
-        #typo3-pagetree .x-tree-root-ct ul {
-            padding-left: 19px;
-            margin: 0;
-        }
-
-        .x-tree-root-ct ul li.expanded ul {
-            background: url("' . $this->getBackPath() .
-                'sysext/t3skin/icons/gfx/ol/line.gif") repeat-y scroll left top transparent;
-        }
-
-        .x-tree-root-ct ul li.expanded.last ul {
-            background: none;
-        }
-
-        .x-tree-root-ct li {
-            clear: left;
-            margin-bottom: 0;
-        }
-        ';
-
-        $currentSubScript = '';
-        if ($this->currentSubScript) {
-            $currentSubScript = 'top.currentSubScript = unescape("' . rawurlencode($this->currentSubScript) . '");';
-        }
-
-        $doHighlight = '';
-        if ($this->doHighlight) {
-            $doHighlight = 'hilight_row("row" + top.fsMod.recentIds["commerce"], highLightID);';
-        }
 
         $formStyle = (!$GLOBALS['CLIENT']['FORMSTYLE'] ? '' : 'if (linkObj) { linkObj.blur(); }');
 
-        // Setting JavaScript for menu.
-        $this->doc->JScode = $this->doc->wrapScriptTags(
-            $currentSubScript . '
-
-            function jumpTo(id, linkObj, highLightID, script) {
-                var theUrl;
-
-                if (script) {
-                    theUrl = top.TS.PATH_typo3 + script;
-									console.log("script: " + script);
-									console.log("Vlt. falsche Url in commerce/Classes/Controller/CategoryNavigationFrameController.php [164]");
-									alert("Bitte console.log checken!! (ARUB)");
-                } else {
-                    theUrl = top.currentSubScript;
-                }
-
-                theUrl = theUrl + id;
-
-
-                if (top.condensedMode) {
-                    top.content.document.location = theUrl;
-                } else {
-                    parent.list_frame.document.location = theUrl;
-                }
-                ' . $doHighlight . '
-                ' . $formStyle . '
-                return false;
-            }
-
-            // Call this function, refresh_nav(), from another script in the backend
-            // if you want to refresh the navigation frame (eg. after having changed
-            // a page title or moved pages etc.)
-            // See BackendUtility::getSetUpdateSignal()
-            function refresh_nav() {
-                window.setTimeout(\'Tree.refresh();\', 0);
-            }
-
-            '
-        );
-
-        $this->doc->loadJavascriptLib('contrib/prototype/prototype.js');
-        $this->doc->loadJavascriptLib('js/tree.js');
-        $this->doc->JScode .= $this->doc->wrapScriptTags('
-            Tree.ajaxID = "CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse' .
-            ($bare ? 'WithoutProduct' : '') . '";
-        ');
 
         // Adding javascript code for AJAX (prototype), drag&drop and the
         // pagetree as well as the click menu code
-        $this->doc->getContextMenuCode();
+        //$this->doc->getContextMenuCode();
 
-        $this->doc->bodyTagId = 'typo3-pagetree';
+        $this->doc->bodyTagId = 'typo3-fancytree';
     }
 
     /**
@@ -212,16 +87,6 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
      */
     public function main()
     {
-        // Check if commerce needs to be updated.
-        if ($this->isUpdateNecessary()) {
-            $tree = $this->getLanguageService()->getLL('ext.update');
-        } else {
-            // Get the browseable Tree
-            $tree = $this->categoryTree->getBrowseableTree();
-        }
-        // Outputting page tree:
-        $this->content .= $tree;
-
         $docHeaderButtons = $this->getButtons();
 
         $markers = array(
@@ -281,18 +146,30 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
      * Makes the AJAX call to expand or collapse the categorytree.
      * Called by typo3/ajax.php.
      *
-     * @param array $params Additional parameters (not used here)
+     * @param array $paramsRaw Additional parameters
      * @param AjaxRequestHandler $ajaxObj Ajax object
      *
      * @return void
      */
-    public function ajaxExpandCollapse(array $params, AjaxRequestHandler &$ajaxObj)
+    public function ajaxExpandCollapse(array $paramsRaw, AjaxRequestHandler &$ajaxObj)
     {
-        // Get the Category Tree
-        $this->init();
-        $tree = $this->categoryTree->getBrowseableAjaxTree($this->getParameter());
+    	$params = $paramsRaw['request']->getQueryParams();
 
-        $ajaxObj->addContent('tree', $tree);
+		if (isset($params['action']) && isset($params['table']) && isset($params['uid'])) {
+			$treeState = unserialize($GLOBALS['BE_USER']->uc['commerceNavTreeState']);
+			if ($params['action'] == 'collapse') {
+				if (isset($treeState[$params['table']][$params['uid']])) {
+					unset($treeState[$params['table']][$params['uid']]);
+				}
+			} else {
+				$treeState[$params['table']][$params['uid']] = $params['uid'];
+			}
+
+			$GLOBALS['BE_USER']->uc['commerceNavTreeState'] = serialize($treeState);
+			$GLOBALS['BE_USER']->writeUC();
+		}
+
+        $ajaxObj->addContent('tree', var_export($treeState, true));
     }
 
     /**
@@ -304,13 +181,16 @@ class CategoryNavigationFrameController extends \TYPO3\CMS\Backend\Module\BaseSc
      *
      * @return void
      */
-    public function ajaxExpandCollapseWithoutProduct(array $params, AjaxRequestHandler &$ajaxObj)
+    public function ajaxGetCategoryTreeData(array $params, AjaxRequestHandler &$ajaxObj)
     {
         // Get the category tree without the products and the articles
         $this->init(true);
-        $tree = $this->categoryTree->getBrowseableAjaxTree($this->getParameter());
 
-        $ajaxObj->addContent('tree', $tree);
+
+        // Get the Category Tree
+        $categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
+
+        $ajaxObj->addContent('tree', $categoryTree->getTreeJSON());
     }
 
     /**

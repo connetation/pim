@@ -1,3 +1,59 @@
+plugin.tx_commerce {
+	settings {
+	}
+
+	persistence {
+		#storagePid = 1
+		classes {
+			CommerceTeam\Commerce\Domain\Model\NewCategory {
+				mapping {
+					tableName = tx_commerce_categories
+				}
+			}
+			CommerceTeam\Commerce\Domain\Model\NewProduct {
+				mapping {
+					tableName = tx_commerce_products
+				}
+			}
+		}
+	}
+
+    view {
+        layoutRootPaths.0   = EXT:commerce/Resources/Private/Layouts/
+        templateRootPaths.0 = EXT:commerce/Resources/Private/Templates/
+        partialRootPaths.0  = EXT:commerce/Resources/Private/Partials/
+    }
+}
+
+
+module.tx_commerce {
+    settings < plugin.tx_commerce.settings
+    persistence < plugin.tx_commerce.persistence
+    view < plugin.tx_commerce.view
+    view {
+        layoutRootPaths {
+        	0 = EXT:commerce/Resources/Private/Backend/Layouts/
+        }
+        templateRootPaths {
+        	0 = EXT:commerce/Resources/Private/Backend/Templates/
+        }
+        partialRootPaths {
+        	0  = EXT:commerce/Resources/Private/Backend/Partials/
+        }
+    }
+}
+
+
+
+
+
+#
+#
+# OLD COMMERCE
+#
+#
+
+
 plugin.tx_commerce_pi1.userFunc = CommerceTeam\Commerce\Controller\ListController->main
 plugin.tx_commerce_pi2.userFunc = CommerceTeam\Commerce\Controller\BasketController->main
 plugin.tx_commerce_pi3.userFunc = CommerceTeam\Commerce\Controller\CheckoutController->main

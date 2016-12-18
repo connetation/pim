@@ -42,6 +42,14 @@ if (TYPO3_MODE == 'BE') {
     }
 
 
+
+
+	// Add Category Navigation Component
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addNavigationComponent('commerce', 'typo3-commercecategory');
+
+
+
+
     // add main module
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
         'commerce',
@@ -51,36 +59,57 @@ if (TYPO3_MODE == 'BE') {
     );
 
     // add category module
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
-        'commerce',
-        'category',
-        '',
-        PATH_TXCOMMERCE . 'Modules/Category/'
-    );
+	if (TYPO3_MODE === 'BE' && !(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_INSTALL)) {
+		// Module Commerce->Category
+		\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+			'CommerceTeam.' . $_EXTKEY,
+			'commerce',
+			'category',
+			'', //'after:layout',
+			[
+				'BackendCategory' => 'index, hide, unhide, delete, up, down'
+			],
+			[
+				'icon'        => 'EXT:commerce/Resources/Public/Icons/mod_category.gif',
+				//'labels' => 'LLL:EXT:viewpage/Resources/Private/Language/locallang_mod.xlf',
+				'labels'      => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xml',
+				'access'      => 'user,group',
+				//'routeTarget' => 'CommerceTeam\Commerce\Modules\ListModule::mainAction',
+				'navigationComponentId' => 'typo3-commercecategory'
+			]
+		);
+	}
 
     // Access Module
+    /* * /
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
         'commerce',
         'permission',
         '',
         PATH_TXCOMMERCE . 'Modules/Permission/'
     );
+	/* */
 
     // Orders module
+    /* * /
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
         'commerce',
         'orders',
         '',
         PATH_TXCOMMERCE . 'Modules/Orders/'
     );
+	/**/
+
 
     // Statistic Module
+    /* * /
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
         'commerce',
         'statistic',
         '',
         PATH_TXCOMMERCE . 'Modules/Statistic/'
     );
+	/* */
 
     // Systemdata module
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
@@ -91,28 +120,23 @@ if (TYPO3_MODE == 'BE') {
     );
 
     // Category-Tree module
+    /* * /
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
         'commerce',
         'Tree',
         '',
         PATH_TXCOMMERCE . 'Modules/CategoryNavigationFrame/'
     );
-		/*
-		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler (
-			'Commerce::categoryNavigationFrame',
-			'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController->backDownAlbum'
-		);
-		*/
-
-
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-        'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapseWithoutProduct',
-        'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController->ajaxExpandCollapseWithoutProduct'
-    );
+	/* */
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
         'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse',
         'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController->ajaxExpandCollapse'
+    );
+
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
+        'CommerceTeam_Commerce_CategoryViewHelper::ajaxGetCategoryTreeData',
+        'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController->ajaxGetCategoryTreeData'
     );
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(

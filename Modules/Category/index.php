@@ -21,5 +21,5 @@
 $categoryModuleController = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
     'CommerceTeam\\Commerce\\Controller\\CategoryModuleController'
 );
-$categoryModuleController->main();
-$categoryModuleController->printContent();
+$categoryModuleController->mainAction();
+//$categoryModuleController->printContent();

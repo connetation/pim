@@ -196,7 +196,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                         'script' => 'wizard_rte.php',
                     ),
                 ),
-				 */ 
+				 */
             ),
         ),
         'images' => array(
@@ -256,22 +256,24 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
             ),
         ),
         'categories' => array(
-            'exclude' => 1,
+            'exclude'   => 1,
             'l10n_mode' => 'exclude',
-            'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.categories',
-            'config' => array(
-                //'type' => 'group',
-                //'internal_type' => 'passthrough',
-                'type' => 'user',
-                'allowed' => 'tx_commerce_categories',
-                'form_type' => 'user',
-                'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc->getSingleField_selectCategories',
-                'treeView' => 1,
-                'treeClass' => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc\\CategoryTree',
-                'size' => 7,
+            'label'     => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_products.categories',
+            'config'    => array(
+                /* * /
+                'type'        => 'group',
+                'internal_type' => 'passthrough',
+                /* */
+                'type'        => 'user',
+                'allowed'     => 'tx_commerce_categories',
+                'form_type'   => 'user',
+                'userFunc'    => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc->getSingleField_selectCategories',
+                'treeView'    =>  1,
+                'treeClass'   => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc\\CategoryTree',
+                'size'        =>  7,
                 'autoSizeMax' => 10,
-                'minitems' => 1,
-                'maxitems' => 20,
+                'minitems'    =>  1,
+                'maxitems'    => 20,
             ),
         ),
 
