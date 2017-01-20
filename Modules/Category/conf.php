@@ -14,7 +14,7 @@
  */
 
 $MCONF['script'] = '_DISPATCH';
-$MLANG['default']['tabs_images']['tab'] = '../../Resources/Public/Icons/mod_category.gif';
+$MLANG['default']['tabs_images']['tab'] = '../../Resources/Public/Icons/mod_category.svg';
 $MLANG['default']['ll_ref'] = 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xml';
 
 $MCONF['access'] = 'user,group';
