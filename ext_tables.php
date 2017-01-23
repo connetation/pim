@@ -51,11 +51,16 @@ if (TYPO3_MODE == 'BE') {
 
 
     // add main module
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+    	'CommerceTeam.' . $_EXTKEY,
         'commerce',
         '',
         'after:file',
-        PATH_TXCOMMERCE . 'Modules/Main/'
+        [],
+        [
+			'icon'        => 'EXT:commerce/Resources/Public/Icons/mod_main.svg',
+			'labels'      => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_main.xlf',
+        ]
     );
 
     // add category module
@@ -67,10 +72,10 @@ if (TYPO3_MODE == 'BE') {
 			'category',
 			'', //'after:layout',
 			[
-				'BackendCategory' => 'index, hide, unhide, delete, up, down'
+				'Backend\Category' => 'index, hide, unhide, delete, up, down'
 			],
 			[
-				'icon'        => 'EXT:commerce/Resources/Public/Icons/mod_category.gif',
+				'icon'        => 'EXT:commerce/Resources/Public/Icons/mod_category.svg',
 				//'labels' => 'LLL:EXT:viewpage/Resources/Private/Language/locallang_mod.xlf',
 				'labels'      => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xml',
 				'access'      => 'user,group',
@@ -89,6 +94,24 @@ if (TYPO3_MODE == 'BE') {
         PATH_TXCOMMERCE . 'Modules/Permission/'
     );
 	/* */
+	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+		'CommerceTeam.' . $_EXTKEY,
+		'commerce',
+		'permission',
+		'',
+		[
+			'Backend\Access' => 'index'
+		],
+		[
+			'icon'        => 'EXT:commerce/Resources/Public/Icons/mod_access.svg',
+			'labels'      => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_access.xml',
+			'access'      => 'user,group',
+			//'routeTarget' => 'CommerceTeam\Commerce\Modules\ListModule::mainAction',
+			//'navigationComponentId' => 'typo3-commercecategory'
+		]
+	);
+
+
 
     // Orders module
     /* * /
@@ -112,12 +135,30 @@ if (TYPO3_MODE == 'BE') {
 	/* */
 
     // Systemdata module
+    /*
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
         'commerce',
         'systemdata',
         '',
         PATH_TXCOMMERCE . 'Modules/Systemdata/'
     );
+	*/
+	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+		'CommerceTeam.' . $_EXTKEY,
+		'commerce',
+		'systemdata',
+		'',
+		[
+			'Backend\SystemdataModule' => 'index'
+		],
+		[
+			'icon'        => 'EXT:commerce/Resources/Public/Icons/mod_systemdata.svg',
+			'labels'      => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_systemdata.xml',
+			'access'      => 'user,group',
+			//'routeTarget' => 'CommerceTeam\Commerce\Modules\ListModule::mainAction',
+			//'navigationComponentId' => 'typo3-commercecategory'
+		]
+	);
 
     // Category-Tree module
     /* * /
@@ -129,19 +170,27 @@ if (TYPO3_MODE == 'BE') {
     );
 	/* */
 
+
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-        'CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse',
-        'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController->ajaxExpandCollapse'
+        'CommerceTeam_Commerce_ProductTree::ajaxExpandCollapse',
+        'CommerceTeam\\Commerce\\Controller\\Backend\\AjaxProductTreeController->ajaxExpandCollapse'
     );
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-        'CommerceTeam_Commerce_CategoryViewHelper::ajaxGetCategoryTreeData',
-        'CommerceTeam\\Commerce\\Controller\\CategoryNavigationFrameController->ajaxGetCategoryTreeData'
+        'CommerceTeam_Commerce_ProductTree::ajaxGetCategoryTreeData',
+        'CommerceTeam\\Commerce\\Controller\\Backend\\AjaxProductTreeController->ajaxGetCategoryTreeData'
+    );
+
+
+
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
+        'CommerceTeam_Commerce_Access::ajaxGetAccessData',
+        'CommerceTeam\\Commerce\\Controller\\Backend\\AccessAjaxController->ajaxGetAccessData'
     );
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
-        'CommerceTeam_Commerce_PermissionAjaxController::dispatch',
-        'CommerceTeam\\Commerce\\Controller\\PermissionAjaxController->dispatch'
+        'CommerceTeam_Commerce_Access::ajaxSetAccess',
+        'CommerceTeam\\Commerce\\Controller\\Backend\\AccessAjaxController->ajaxSetAccess'
     );
 
 

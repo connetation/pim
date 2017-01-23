@@ -1,5 +1,5 @@
 <?php
-namespace CommerceTeam\Commerce\Controller;
+namespace CommerceTeam\Commerce\Controller\Backend;
 
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
@@ -13,7 +13,7 @@ use CommerceTeam\Commerce\Domain\Repository\NewProductRepository;
  *
  * @author Anselm Ruby <a.ruby@connetation.at>
  */
-class BackendCategoryController extends ActionController {
+class CategoryController extends ActionController {
 	/**
      * Backend Template Container
      *

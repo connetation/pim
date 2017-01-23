@@ -12,11 +12,11 @@
 <f:section name="content">
 
 	<f:if condition="{categories}">
-		<f:render partial="BackendCategory/List" arguments="{parent: parent, records: categories, recordType: 'category'}"/>
+		<f:render partial="Backend/CategoryList" arguments="{parent: parent, records: categories, recordType: 'category'}"/>
 	</f:if>
 
 	<f:if condition="{products}">
-		<f:render partial="BackendCategory/List" arguments="{parent: parent, records: products, recordType: 'product'}"/>
+		<f:render partial="Backend/CategoryList" arguments="{parent: parent, records: products, recordType: 'product'}"/>
 	</f:if>
 
 </f:section>

@@ -50,9 +50,19 @@ class PageRenderer implements SingletonInterface {
             'stylesheet',
             'screen'
         );
+        $pageRenderer->addCssFile(
+            ExtensionManagementUtility::extRelPath('commerce') . 'Resources/Public/Stylesheets/be_mod_access.css',
+            'stylesheet',
+            'screen'
+        );
 
         $pageRenderer->addJsFile(
-            $GLOBALS['BACK_PATH'] . $jsPath . 'categoryTree.js',
+            $GLOBALS['BACK_PATH'] . $jsPath . 'tcaCategoryTree.js',
+            $type = 'text/javascript'
+        );
+
+        $pageRenderer->addJsFile(
+            $GLOBALS['BACK_PATH'] . $jsPath . 'modAccess.js',
             $type = 'text/javascript'
         );
     }
