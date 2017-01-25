@@ -71,6 +71,7 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
                     array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
                     array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0),
                 ),
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_parent' => array(
@@ -85,6 +86,7 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
                 'foreign_table' => 'tx_commerce_attributes',
                 'foreign_table_where' => ' AND tx_commerce_attributes.pid = ###CURRENT_PID###
                     AND tx_commerce_attributes.sys_language_uid IN (-1,0)',
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_diffsource' => array(
@@ -143,6 +145,7 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title',
+                'renderType' => 'selectSingleBox',
             ),
         ),
 
@@ -209,6 +212,7 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
                         '%f'
                     ),
                 ),
+                'renderType' => 'selectSingle',
             ),
         ),
         'valuelist' => array(
@@ -289,6 +293,7 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
                         'showHeader' => true,
                     ),
                 ),
+                'renderType' => 'selectSingleBox',
             ),
         ),
     ),
@@ -296,8 +301,8 @@ $GLOBALS['TCA']['tx_commerce_attributes'] = array(
         '0' => array(
             'showitem' => '
             --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.basis,
-                sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, parent, has_valuelist, multiple,
-                valueformat, title;;;;2-2-2, internal_title, unit, icon;;;;3-3-3;,iconmode,
+                sys_language_uid, l18n_parent, l18n_diffsource, hidden, --palette--;;1, parent, has_valuelist, multiple,
+                valueformat, title, internal_title, unit, icon;,iconmode,
             --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_attributes.valuelistlist,
                 valuelist',
         ),

@@ -26,6 +26,7 @@ $tempColumns = array(
             'size' => 1,
             'minitems' => 0,
             'maxitems' => 1,
+            'renderType' => 'selectSingle',
         ),
     ),
     'tx_commerce_tt_address_id' => array(
@@ -52,6 +53,7 @@ $tempColumns = array(
                     'JSopenParams' => 'height=350,width=580,status=0,menubar=0,scrollbars=1',
                 ),
             ),
+            'renderType' => 'selectSingle',
         ),
     ),
     'tx_commerce_orders' => array(
@@ -64,7 +66,7 @@ $tempColumns = array(
     ),
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('fe_users', $tempColumns, 1);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('fe_users', $tempColumns);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
     'fe_users',
     '--div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:fe_users.tx_commerce,

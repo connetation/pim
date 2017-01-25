@@ -100,19 +100,23 @@ class CategoryTree {
 
 
 	public function preExpanded($tableName2UIDs) {
-		foreach ($tableName2UIDs as $tableName => $selUIDs) {
-			foreach ($selUIDs as $selUID) {
-				if (isset($this->nodeDataCollection[$tableName][$selUID])) {
-					$this->nodeDataCollection[$tableName][$selUID]['expanded'] = true;
-				} else {
-					throw new \Exception("Could not pre-select '$tableName' with UID '$selUID'. Not found!", 1);
-				}
-			}
-		}
+	  if(is_array($tableName2UIDs)) {
+  		foreach ($tableName2UIDs as $tableName => $selUIDs) {
+  		  if(is_array($selUIDs)) {
+    			foreach ($selUIDs as $selUID) {
+    				if (isset($this->nodeDataCollection[$tableName][$selUID])) {
+    					$this->nodeDataCollection[$tableName][$selUID]['expanded'] = true;
+    				} else {
+    					throw new \Exception("Could not pre-select '$tableName' with UID '$selUID'. Not found!", 1);
+    				}
+    			}
+    		}
+  		}
+    }
 	}
 
 
-	protected function addTreeData($tableName, $parentTableName, $mmTableName, $nmWhere) {
+	protected function addTreeData($tableName, $parentTableName, $mmTableName, $nmWhere = '') {
         $nodeDataRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
             'uid, title, hidden',
             $tableName,

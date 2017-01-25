@@ -53,6 +53,7 @@ return array(
                 ),
                 'foreign_table' => 'tx_commerce_order_types',
                 'default' => '',
+                'renderType' => 'selectSingle',
             ),
         ),
         'order_id' => array(
@@ -87,6 +88,7 @@ return array(
                 'type' => 'select',
                 'foreign_table' => 'pages',
                 'itemsProcFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\OrderEditFunc->orderStatus',
+                'renderType' => 'selectSingle',
             ),
         ),
         'cust_fe_user' => array(
@@ -125,6 +127,7 @@ return array(
                 'type' => 'select',
                 'foreign_table' => 'tx_commerce_articles',
                 'foreign_table_where' => ' AND tx_commerce_articles.article_type_uid = 2',
+                'renderType' => 'selectSingle',
             ),
         ),
         'sum_price_net' => array(
@@ -157,6 +160,7 @@ return array(
                 'foreign_table' => 'static_currencies',
                 'foreign_table_where' => ' ',
                 'default' => '49',
+                'renderType' => 'selectSingle',
             ),
         ),
         'comment' => array(
@@ -186,6 +190,7 @@ return array(
                     array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
                     array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0),
                 ),
+                'renderType' => 'selectSingle',
             ),
         ),
         'pricefromnet' => array(
@@ -196,6 +201,7 @@ return array(
                     array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:no', 0),
                     array('LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:yes', 1),
                 ),
+                'renderType' => 'selectSingle',
             ),
         ),
 

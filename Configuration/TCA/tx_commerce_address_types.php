@@ -45,6 +45,7 @@ return array(
                     array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
                     array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0),
                 ),
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_parent' => array(
@@ -59,6 +60,7 @@ return array(
                 'foreign_table' => 'tx_commerce_address_types',
                 'foreign_table_where' => ' AND tx_commerce_address_types.pid = ###CURRENT_PID###
                     AND tx_commerce_address_types.sys_language_uid IN (-1,0)',
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_diffsource' => array(

@@ -71,6 +71,8 @@ class Product extends AbstractEntity
         't3ver_stage',
         't3ver_state',
         't3ver_tstamp',
+        'lang_uid',
+        '_LOCALIZED_UID',
     );
 
     /* Data Variables */

@@ -34,7 +34,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
             'fe_group' => 'fe_group',
         ),
         'dividers2tabs' => '1',
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'article.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'article.svg',
     ),
     'interface' => array(
         'showRecordFieldList' => 'sys_language_uid, l18n_parent, l18n_diffsource, hidden, starttime, endtime, fe_group,
@@ -58,6 +58,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
                     array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
                     array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0),
                 ),
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_parent' => array(
@@ -72,6 +73,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
                 'foreign_table' => 'tx_commerce_articles',
                 'foreign_table_where' => ' AND tx_commerce_articles.pid = ###CURRENT_PID###
                     AND tx_commerce_articles.sys_language_uid IN (-1,0)',
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_diffsource' => array(
@@ -130,6 +132,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title',
+                'renderType' => 'selectSingleBox',
             ),
         ),
         'title' => array(
@@ -270,6 +273,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
                         0,
                     ),
                 ),
+                'renderType' => 'selectSingle',
             ),
         ),
         'article_type_uid' => array(
@@ -284,6 +288,7 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
                 'minitems' => 0,
                 'maxitems' => 1,
                 'default' => 1,
+                'renderType' => 'selectSingle',
             ),
         ),
         'relatedpage' => array(
@@ -343,9 +348,9 @@ $GLOBALS['TCA']['tx_commerce_articles'] = array(
     'types' => array(
         '0' => array(
             'showitem' => '
-            hidden;;1, title, subtitle, ordernumber,eancode,
+            hidden, --palette--;;1, title, subtitle, ordernumber,eancode,
             description_extra;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
-            images, plain_text, tax, supplier_uid, article_type_uid, relatedpage;;;;1-1-1, products_uid,
+            images, plain_text, tax, supplier_uid, article_type_uid, relatedpage, products_uid,
             article_attributes,' .
                 (
                     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][COMMERCE_EXTKEY]['extConf']['simpleMode'] ? '' : '

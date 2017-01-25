@@ -52,6 +52,7 @@ return array(
                     array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
                     array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0),
                 ),
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_parent' => array(
@@ -66,6 +67,7 @@ return array(
                 'foreign_table' => 'tx_commerce_moveordermails',
                 'foreign_table_where' => ' AND tx_commerce_moveordermails.pid = ###CURRENT_PID###
                     AND tx_commerce_moveordermails.sys_language_uid IN (-1,0)',
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_diffsource' => array(
@@ -124,6 +126,7 @@ return array(
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title',
+                'renderType' => 'selectSingleBox',
 
             ),
         ),
@@ -148,6 +151,7 @@ return array(
                 ),
                 'size' => 1,
                 'maxitems' => 1,
+                'renderType' => 'selectSingle',
             ),
         ),
         'mailtemplate' => array(
@@ -234,7 +238,7 @@ return array(
         ),
     ),
     'types' => array(
-        '0' => array('showitem' => 'sys_language_uid, l18n_parent, l18n_diffsource,hidden;;1;;1-1-1, name,
+        '0' => array('showitem' => 'sys_language_uid, l18n_parent, l18n_diffsource,hidden, --palette--;;1, name,
             mailkind, mailtemplate,htmltemplate, mailcharset, sendername, senderemail, otherreceiver, BCC'),
     ),
     'palettes' => array(

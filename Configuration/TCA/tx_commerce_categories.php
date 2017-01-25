@@ -32,7 +32,7 @@ return array(
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ),
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'categories.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'categories.svg',
         'dividers2tabs' => '1',
         'searchFields' => 'uid, title, subtitle, navtitle, description',
     ),
@@ -58,6 +58,7 @@ return array(
                     array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
                     array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0),
                 ),
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_parent' => array(
@@ -72,6 +73,7 @@ return array(
                 'foreign_table' => 'tx_commerce_categories',
                 'foreign_table_where' => 'AND tx_commerce_categories.pid = ###CURRENT_PID###
                     AND tx_commerce_categories.sys_language_uid IN (-1,0)',
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_diffsource' => array(
@@ -142,6 +144,7 @@ return array(
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title',
+                'renderType' => 'selectSingleBox',
 
             ),
         ),
@@ -310,10 +313,10 @@ return array(
     'types' => array(
         '0' => array(
             'showitem' => '
-                sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, title;;;;2-2-2, subtitle;;;;3-3-3,
+                sys_language_uid, l18n_parent, l18n_diffsource, hidden, --palette--;;1, title, subtitle,
                 description;;;richtext:rte_transform[flag=rte_enabled|mode=ts_cssimgpath=uploads/tx_commerce/rte/],
-                images, teaser;;;;3-3-3, teaserimages, navtitle, keywords,parent_category;;;;1-1-1,
-                relatedpage;;;;1-1-1, ts_config;;;;1-1-1,
+                images, teaser, teaserimages, navtitle, keywords,parent_category,
+                relatedpage, ts_config,
         --div--;LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.select_attributes,
                 attributes',
         ),

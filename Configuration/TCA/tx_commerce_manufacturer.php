@@ -96,6 +96,7 @@ return array(
                 'type' => 'select',
                 'foreign_table' => 'static_countries',
                 'foreign_table_where' => 'ORDER BY static_countries.cn_short_en',
+                'renderType' => 'selectSingle',
             ),
         ),
         'phone' => array(

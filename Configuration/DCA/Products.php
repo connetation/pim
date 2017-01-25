@@ -282,7 +282,7 @@ class Products
                     'condition' => array(
                         'table' => 'tx_commerce_products',
                         'select' => 'l18n_parent',
-                        'where' => 'uid=###uid### AND 0=',
+                        'where' => 'uid=###uid###',
                         'isXML' => false,
                         'if' => 'isGreater',
                         'compareTo' => 0,
@@ -301,7 +301,7 @@ class Products
                     'condition' => array(
                         'table' => 'tx_commerce_products',
                         'select' => 'l18n_parent',
-                        'where' => 'uid=###uid### AND 0!=',
+                        'where' => 'uid=###uid###',
                         'isXML' => false,
                         'if' => 'isGreater',
                         'compareTo' => 0,

@@ -138,6 +138,7 @@ return array(
                 'type' => 'select',
                 'foreign_table' => 'tx_commerce_orders',
                 'readOnly' => true,
+                'renderType' => 'selectSingle',
             ),
         ),
         // @todo Declaration for iproc function for selecting right value

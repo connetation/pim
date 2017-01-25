@@ -39,7 +39,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ),
-        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'products.gif',
+        'iconfile' => PATH_TXCOMMERCE_ICON_TABLE_REL . 'products.svg',
         'dividers2tabs' => '1',
         'searchFields' => 'uid, title, subtitle, navtitle, description',
     ),
@@ -64,6 +64,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                     array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
                     array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0),
                 ),
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_parent' => array(
@@ -78,6 +79,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                 'foreign_table' => 'tx_commerce_products',
                 'foreign_table_where' => ' AND tx_commerce_products.pid = ###CURRENT_PID###
                     AND tx_commerce_products.sys_language_uid IN (-1,0)',
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_diffsource' => array(
@@ -136,6 +138,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title',
+                'renderType' => 'selectSingleBox',
             ),
         ),
         'title' => array(
@@ -291,6 +294,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
                         0
                     ),
                 ),
+                'renderType' => 'selectSingle',
             ),
         ),
         'relatedpage' => array(

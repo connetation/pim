@@ -115,9 +115,6 @@ return array(
         ),
     ),
     'types' => array(
-        '0' => array('showitem' => 'sid;;;;1-1-1, article_id,price_id, price_gross, price_net, quantity'),
-    ),
-    'palettes' => array(
-        '1' => array('showitem' => ''),
+        '0' => array('showitem' => 'sid, article_id,price_id, price_gross, price_net, quantity'),
     ),
 );

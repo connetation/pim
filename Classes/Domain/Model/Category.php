@@ -246,6 +246,8 @@ class Category extends AbstractEntity
         'images',
         'ts_config',
         'l18n_parent',
+        'lang_uid',
+        '_LOCALIZED_UID',
     );
 
     /**
@@ -287,7 +289,6 @@ class Category extends AbstractEntity
                     $hook->postinit($this);
                 }
             }
-
             return true;
         }
 
@@ -765,7 +766,7 @@ class Category extends AbstractEntity
             parent::loadData($translationMode);
             $this->images_array = GeneralUtility::trimExplode(',', $this->images, true);
             $this->teaserImagesArray = GeneralUtility::trimExplode(',', $this->teaserimages, true);
-
+            
             $this->categories_uid = array_unique(
                 $this->databaseConnection->getChildCategories($this->uid, $this->lang_uid)
             );

@@ -57,6 +57,7 @@ return array(
                     array('LLL:EXT:lang/locallang_general.php:LGL.allLanguages', -1),
                     array('LLL:EXT:lang/locallang_general.php:LGL.default_value', 0),
                 ),
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_parent' => array(
@@ -71,6 +72,7 @@ return array(
                 'foreign_table' => 'tx_commerce_attribute_values',
                 'foreign_table_where' => ' AND tx_commerce_attribute_values.pid = ###CURRENT_PID###
                     AND tx_commerce_attribute_values.sys_language_uid IN (-1,0)',
+                'renderType' => 'selectSingle',
             ),
         ),
         'l18n_diffsource' => array(
@@ -163,13 +165,14 @@ return array(
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
+                'renderType' => 'selectSingle',
             ),
         ),
     ),
     'types' => array(
         '0' => array(
             'showitem' => '
-                sys_language_uid, l18n_parent, l18n_diffsource, hidden;;1, value, showvalue, icon, attributes_uid
+                sys_language_uid, l18n_parent, l18n_diffsource, hidden, --palette--;;1, value, showvalue, icon, attributes_uid
             ',
         ),
     ),

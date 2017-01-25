@@ -173,8 +173,8 @@ return array(
     'types' => array(
         '0' => array(
             'showitem' => '
-                hidden;;1, price_gross, price_net, price_scale_amount_start,
-                price_scale_amount_end, purchase_price;;;;3-3-3, uid_article',
+                hidden, --palette--;;1, price_gross, price_net, price_scale_amount_start,
+                price_scale_amount_end, purchase_price, uid_article',
         ),
     ),
     'palettes' => array(

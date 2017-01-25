@@ -293,6 +293,7 @@ class Navigation
     public function init($content, array $conf)
     {
         $this->mConf = $this->processConf($conf);
+        
         if ($this->mConf['useRootlineInformationToUrl']) {
             $this->useRootlineInformationToUrl = $this->mConf['useRootlineInformationToUrl'];
         }
@@ -705,8 +706,8 @@ class Navigation
         }
 
         $sql .= $sorting;
-
         $res = $database->sql_query($sql);
+        $fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
 
         while (($row = $database->sql_fetch_assoc($res))) {
             $nodeArray = array();
@@ -716,6 +717,12 @@ class Navigation
                 $nodeArray['CommerceMenu'] = true;
                 $nodeArray['pid'] = $dataRow['pid'];
                 $nodeArray['uid'] = $uidPage;
+                $nodeArray['recordUid'] = $dataRow['uid'];
+                $nodeArray['recordImg'] = $dataRow['images'];
+                $fileObjects = $fileRepository->findByRelation($mainTable, $this->mConf['recordImgField'] ? $this->mConf['recordImgField'] : 'images', $dataRow['uid']);
+                if(count($fileObjects)) {
+                  $nodeArray['recordImg'] = $fileObjects[0]->getUid();
+                }
                 $nodeArray['title'] = htmlspecialchars(strip_tags($dataRow['title']));
                 /*
                  * Add Pages Overlay to Array, if sys language uid set
@@ -853,7 +860,7 @@ class Navigation
                 }
 
                 $nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
-                    $this->generateChash($nodeArray['_ADD_GETVARS'] . $this->getFrontendController()->linkVars);
+                    $this->generateChash($nodeArray['_ADD_GETVARS'] . $this->separator . 'id=' . $uidPage . $this->getFrontendController()->linkVars);
 
                 $treeList[$row['uid_local']] = $nodeArray;
             }

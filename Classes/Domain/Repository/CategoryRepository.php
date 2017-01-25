@@ -437,7 +437,7 @@ class CategoryRepository extends Repository
      */
     public function findByUid($uid)
     {
-        return (array) $this->getDatabaseConnection()->exec_SELECTgetRows(
+        return (array) $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             '*',
             $this->databaseTable,
             'uid = ' . (int) $uid . $this->enableFields($this->databaseTable)

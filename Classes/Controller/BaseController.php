@@ -1590,8 +1590,9 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $data = $element->returnAssocArray();
 
         $markerArray = $this->generateMarkerArray($data, $typoscript);
-
+        $this->catLocalTS = $typoscript;
         $hooks = HookFactory::getHooks('Controller/BaseController', 'renderElement');
+
         foreach ($hooks as $hook) {
             if (method_exists($hook, 'additionalMarkerElement')) {
                 $markerArray = $hook->additionalMarkerElement($markerArray, $element, $this);
@@ -1602,7 +1603,7 @@ abstract class BaseController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $markerWrap .= strtoupper($prefix) . '_';
         }
         $markerWrap .= '|###';
-
+        
         if (is_array($markerArray) && !empty($markerArray)) {
             $output = $this->cObj->substituteMarkerArray($output, $markerArray, $markerWrap, 1);
             $output = $this->cObj->stdWrap($output, $typoscript['stdWrap.']);

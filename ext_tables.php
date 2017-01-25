@@ -70,7 +70,7 @@ if (TYPO3_MODE == 'BE') {
 				'BackendCategory' => 'index, hide, unhide, delete, up, down'
 			],
 			[
-				'icon'        => 'EXT:commerce/Resources/Public/Icons/mod_category.gif',
+				'icon'        => 'EXT:commerce/Resources/Public/Icons/mod_category.svg',
 				//'labels' => 'LLL:EXT:viewpage/Resources/Private/Language/locallang_mod.xlf',
 				'labels'      => 'LLL:EXT:commerce/Resources/Private/Language/locallang_mod_category.xml',
 				'access'      => 'user,group',
@@ -144,14 +144,25 @@ if (TYPO3_MODE == 'BE') {
         'CommerceTeam\\Commerce\\Controller\\PermissionAjaxController->dispatch'
     );
 
-
-    // commerce icon
-    \TYPO3\CMS\Backend\Sprite\SpriteManager::addTcaTypeIcon(
-        'pages',
-        'contains-commerce',
-        PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/commerce_folder.gif'
-    );
-
+if (version_compare(TYPO3_version, '7.6', '>=')) {
+  /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
+  $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+  $iconRegistry->registerIcon(
+    'tcarecords-pages-contains-commerce',
+    \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+    ['source' => 'EXT:commerce/Resources/Public/Icons/Table/commerce_folder.gif']
+  );
+  $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes']['contains-commerce'] = 'tcarecords-pages-contains-commerce';
+  unset($iconRegistry);
+} else {
+   // commerce icon
+  \TYPO3\CMS\Backend\Sprite\SpriteManager::addTcaTypeIcon(
+      'pages',
+      'contains-commerce',
+      PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/commerce_folder.gif'
+  );
+}
+   
 
     // Add default User TS config
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
