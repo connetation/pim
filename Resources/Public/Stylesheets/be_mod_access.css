@@ -1,0 +1,21 @@
+.be-mod-access .fancytree-folder.fancytree-active .off-active {
+	display: none;
+}
+
+.be-mod-access .fancytree-folder:not(.fancytree-active) .on-active {
+	display: none;
+}
+
+.be-mod-access tr.is-hidden{
+	display: table-row;
+}
+
+.be-mod-access table:focus{
+	outline: none;
+}
+
+.access-form label,
+.access-form select {
+    display: block;
+    font-weight: normal;
+}

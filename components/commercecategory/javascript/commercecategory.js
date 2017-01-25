@@ -53,7 +53,10 @@ TYPO3.Commercecategory.Navigator = Ext.extend(Ext.Panel, {
              */
             var onExpandCollaps = function(action, node) {
                 if (node.data.uid && (node.data.type == "tx_commerce_categories" || node.data.type == "tx_commerce_products")) {
-                    $.ajax({url: TYPO3.settings.ajaxUrls['CommerceTeam_Commerce_CategoryViewHelper::ajaxExpandCollapse'], data: {action: action, table: node.data.type, uid: node.data.uid}});
+                    $.ajax({url: TYPO3.settings.ajaxUrls[
+                        'CommerceTeam_Commerce_ProductTree::ajaxExpandCollapse'],
+                        data: {action: action, table: node.data.type, uid: node.data.uid, treeId: 'commerceNavigationTree'}
+                    });
                 }
             }
             var filter = function(tree, search) {
@@ -66,7 +69,7 @@ TYPO3.Commercecategory.Navigator = Ext.extend(Ext.Panel, {
             }
 
             var tree = $('#commerce-navigation-tree').fancytree({
-                source: {url: TYPO3.settings.ajaxUrls['CommerceTeam_Commerce_CategoryViewHelper::ajaxGetCategoryTreeData']},
+                source: {url: TYPO3.settings.ajaxUrls['CommerceTeam_Commerce_ProductTree::ajaxGetCategoryTreeData'], data: {treeId: 'commerceNavigationTree'}},
                 toggleEffect: false,
                 minExpandLevel: 2,
                 extensions: ["filter"],

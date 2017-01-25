@@ -1,0 +1,13 @@
+{namespace be = TYPO3\CMS\Backend\ViewHelpers}
+{namespace core = TYPO3\CMS\Core\ViewHelpers}
+{namespace commerce = CommerceTeam\Commerce\ViewHelpers}
+
+
+<tr>
+	<td class="intent-{intent}">{node.title}</td>
+</tr>
+<f:if condition="{node.children}">
+	<f:for each="{node.children}" as="subNode">
+		<f:render partial="Backend/AccessNode" arguments="{node: subNode, intent: intent}" />
+	</f:for>
+</f:if>

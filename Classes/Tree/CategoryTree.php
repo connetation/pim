@@ -46,11 +46,25 @@ class CategoryTree {
 	protected $showArticles = true;
 
 
+	protected $expanded = false;
 
 
 
-    public function __construct() {
+
+    public function __construct($treeConf = []) {
         $this->pageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+
+		if (isset($treeConf['showProducts'])) {
+			$this->setShowProducts($treeConf['showProducts']);
+		}
+
+		if (isset($treeConf['showArticles'])) {
+			$this->setShowArticles($treeConf['showArticles']);
+		}
+
+		if (isset($treeConf['expanded'])) {
+			$this->expanded = !!$treeConf['expanded'];
+		}
     }
 
 
@@ -115,30 +129,33 @@ class CategoryTree {
     }
 	}
 
+	protected function addTreeData($tableName, $parentTableName, $mmTableName) {
+      $select = 'uid, title, hidden';
+      if ($tableName == 'tx_commerce_categories') {
+      	$select .= ', perms_userid, perms_groupid, perms_user, perms_group, perms_everybody, editlock';
+      }
+      $nodeDataRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+          $select,
+          $tableName,
+          'sys_language_uid = 0' . $this->pageRepository->deleteClause($tableName)
+      );
 
-	protected function addTreeData($tableName, $parentTableName, $mmTableName, $nmWhere = '') {
-        $nodeDataRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-            'uid, title, hidden',
-            $tableName,
-            'sys_language_uid = 0' . $this->pageRepository->deleteClause($tableName)
-        );
-
-		while ($nodeData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($nodeDataRes)) {
-			$this->nodeDataCollection[$tableName][$nodeData['uid']] = $this->getNodeFromData($tableName, $nodeData);
-		}
+      while ($nodeData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($nodeDataRes)) {
+          $this->nodeDataCollection[$tableName][$nodeData['uid']] = $this->getNodeFromData($tableName, $nodeData);
+      }
 
 
-        $resMM = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local, uid_foreign, sorting', $mmTableName, $nmWhere, '', 'uid_foreign, sorting');
+      $resMM = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local, uid_foreign, sorting', $mmTableName, '', '', 'uid_foreign, sorting');
 
-        while ($mm = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resMM)) {
-            if (isset($this->nodeDataCollection[$tableName][$mm['uid_local']])) {
-                if ($mm['uid_foreign'] == 0) {
-                    $this->tree['children'][] = & $this->nodeDataCollection[$tableName][$mm['uid_local']];
-                } else {
-                    $this->nodeDataCollection[$parentTableName][$mm['uid_foreign']]['children'][] = & $this->nodeDataCollection[$tableName][$mm['uid_local']];
-                }
-            }
-        }
+      while ($mm = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resMM)) {
+          if (isset($this->nodeDataCollection[$tableName][$mm['uid_local']])) {
+              if ($mm['uid_foreign'] == 0) {
+                  $this->tree['children'][] = & $this->nodeDataCollection[$tableName][$mm['uid_local']];
+              } else {
+                  $this->nodeDataCollection[$parentTableName][$mm['uid_foreign']]['children'][] = & $this->nodeDataCollection[$tableName][$mm['uid_local']];
+              }
+          }
+      }
 	}
 
 
@@ -169,9 +186,21 @@ class CategoryTree {
 		$node['type']   = $tableName;
 		$node['uid']    = $data['uid'];
 
+		if($this->expanded) {
+			$node['expanded'] = true;
+		}
+
 		if($tableName == 'tx_commerce_categories') {
 			$node['folder'] = true;
 			$node['extraClasses'] = 'category';
+			$node['access'] = array(
+				'perms_userid'    => intval($data['perms_userid']),
+				'perms_groupid'   => intval($data['perms_groupid']),
+				'perms_user'      => intval($data['perms_user']),
+				'perms_group'     => intval($data['perms_group']),
+				'perms_everybody' => intval($data['perms_everybody']),
+				'editlock'        => !! $data['editlock']
+			);
 		} else if ($tableName == 'tx_commerce_products') {
 			$node['folder'] = false;
 			$node['extraClasses'] = 'product';
@@ -233,15 +262,29 @@ class CategoryTree {
 	}
 
 
-
-
-	public function getTreeJSON() {
+	public function getTree($treeId = null) {
 		if (empty($this->tree)) {
 			$this->generateTree();
 		}
 
-		$treeState = unserialize($GLOBALS['BE_USER']->uc['commerceNavTreeState']);
-		$this->preExpanded($treeState);
+		if ($treeId != null) {
+			$treeState = unserialize($GLOBALS['BE_USER']->uc[$treeId]);
+			$this->preExpanded($treeState);
+		}
+
+		return $this->tree;
+	}
+
+
+	public function getTreeJSON($treeId = null) {
+		if (empty($this->tree)) {
+			$this->generateTree();
+		}
+
+		if ($treeId != null) {
+			$treeState = unserialize($GLOBALS['BE_USER']->uc[$treeId]);
+			$this->preExpanded($treeState);
+		}
 
 		return json_encode([
 			'recordEdit' => \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('record_edit'),
