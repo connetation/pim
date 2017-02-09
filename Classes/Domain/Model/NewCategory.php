@@ -363,7 +363,7 @@ class NewCategory extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity impleme
 	/**
 	 * @return int
 	 */
-	public function getPermsUserid(): int {
+	public function getPermsUserid() {
 		return $this->permsUserid;
 	}
 
@@ -371,7 +371,7 @@ class NewCategory extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity impleme
 	 * @param int $permsUserid
 	 * @return \CommerceTeam\Commerce\Domain\Model\NewCategory
 	 */
-	public function setPermsUserid(int $permsUserid): NewCategory {
+	public function setPermsUserid($permsUserid) {
 		$this->permsUserid = $permsUserid;
 		return $this;
 	}
@@ -381,7 +381,7 @@ class NewCategory extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity impleme
 	/**
 	 * @return int
 	 */
-	public function getPermsUser(): int {
+	public function getPermsUser() {
 		return $this->permsUser;
 	}
 
@@ -389,7 +389,7 @@ class NewCategory extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity impleme
 	 * @param int $permsUser
 	 * @return \CommerceTeam\Commerce\Domain\Model\NewCategory
 	 */
-	public function setPermsUser(int $permsUser): NewCategory {
+	public function setPermsUser($permsUser) {
 		$this->permsUser = $permsUser;
 		return $this;
 	}
@@ -399,7 +399,7 @@ class NewCategory extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity impleme
 	/**
 	 * @return int
 	 */
-	public function getPermsGroupid(): int {
+	public function getPermsGroupid() {
 		return $this->permsGroupid;
 	}
 
@@ -407,7 +407,7 @@ class NewCategory extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity impleme
 	 * @param int $permsGroupid
 	 * @return \CommerceTeam\Commerce\Domain\Model\NewCategory
 	 */
-	public function setPermsGroupid(int $permsGroupid): NewCategory {
+	public function setPermsGroupid($permsGroupid) {
 		$this->permsGroupid = $permsGroupid;
 		return $this;
 	}
@@ -417,7 +417,7 @@ class NewCategory extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity impleme
 	/**
 	 * @return int
 	 */
-	public function getPermsGroup(): int {
+	public function getPermsGroup() {
 		return $this->permsGroup;
 	}
 
@@ -425,7 +425,7 @@ class NewCategory extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity impleme
 	 * @param int $permsGroup
 	 * @return \CommerceTeam\Commerce\Domain\Model\NewCategory
 	 */
-	public function setPermsGroup(int $permsGroup): NewCategory {
+	public function setPermsGroup($permsGroup) {
 		$this->permsGroup = $permsGroup;
 		return $this;
 	}
@@ -435,7 +435,7 @@ class NewCategory extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity impleme
 	/**
 	 * @return int
 	 */
-	public function getPermsEverybody(): int {
+	public function getPermsEverybody() {
 		return $this->permsEverybody;
 	}
 
@@ -443,7 +443,7 @@ class NewCategory extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity impleme
 	 * @param int $permsEverybody
 	 * @return \CommerceTeam\Commerce\Domain\Model\NewCategory
 	 */
-	public function setPermsEverybody(int $permsEverybody): NewCategory {
+	public function setPermsEverybody($permsEverybody) {
 		$this->permsEverybody = $permsEverybody;
 		return $this;
 	}
