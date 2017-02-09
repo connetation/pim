@@ -67,6 +67,12 @@ require(['jquery', "jquery-ui/core", "jquery-ui/widget", 'TYPO3/CMS/Commerce/Lib
 					}
 				}
 			});
+
+			var tree = jqTree.fancytree("getTree");
+			var selNodes = $("#"+inputId).val().split(',');
+			tree.visit(function(node) {
+				node.setSelected((node.data.type == "root" || node.data.type == "tx_commerce_categories") && selNodes.indexOf(node.data.uid) != -1);
+			});
 		});
 
 	});

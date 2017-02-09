@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility as CoreGeneralUtility;
  *
  * @author Thomas Hempel <thomas@work.de>
  */
-class BackendUtility
+class BackendUtility implements \TYPO3\CMS\Core\SingletonInterface
 {
     /**
      * This gets all categories for a product from the database
@@ -3538,4 +3538,84 @@ class BackendUtility
     {
         return $GLOBALS['TYPO3_DB'];
     }
+
+
+
+
+    /*
+     *
+     *
+     *
+     *
+     * NEW CODE AFTER HERE
+     *
+     *
+     *
+     *
+     */
+
+	/**
+	 * @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper
+	 * @inject
+	 */
+	protected $dataMapper;
+
+	/**
+	 * @var \TYPO3\CMS\Backend\Routing\UriBuilder
+	 * @inject
+	 */
+	protected $routingUriBuilder;
+
+
+
+	/**
+	 * Generates the BE-URL to edit a commerce product or category
+	 *
+	 * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $record
+	 * @param string $returnUrl Where to go after Editing
+	 * @return string
+	 */
+	public function getTcaEditRecordUrl(\TYPO3\CMS\Extbase\DomainObject\AbstractEntity $record, $returnUrl) {
+		$table =  $this->dataMapper->getDataMap(get_class($record))->getTableName();
+
+		$uri = $this->routingUriBuilder->buildUriFromRoute('record_edit', array('edit[' . $table . '][' . $record->getUid() . ']' => 'edit'));
+
+		if (!empty($returnUrl)) {
+			$uri .= '&returnUrl=' . rawurlencode($returnUrl);
+		}
+
+		return $uri;
+	}
+
+
+	/**
+	 * Generates the BE-URL to edit a commerce product or category
+	 *
+	 * @param string $table The table name you want to generate the New-Link for
+	 * @param string $returnUrl Where to go after save/cancel
+	 * @param array|null $preSetValues Preset Values
+	 * @return string
+	 */
+	public function getTcaNewRecordUrl($table, $returnUrl = NULL, array $preSetValues = null) {
+		static $productPid = false;
+		if ($productPid === false) {
+			list($commercePid) = FolderRepository::initFolders('Commerce', 'commerce');
+			list($productPid) = FolderRepository::initFolders('Products', 'commerce', $commercePid);
+		}
+
+		$uri = $this->routingUriBuilder->buildUriFromRoute('record_edit', array('edit[' . $table . '][' . $productPid . ']' => 'new'));
+
+		if (!empty($returnUrl)) {
+			$uri .= '&returnUrl=' . rawurlencode($returnUrl);
+		}
+
+		if (!empty($preSetValues)) {
+			foreach ($preSetValues as $field => $preSetValue) {
+				$uri .= '&defVals[' . $table . '][' . $field . ']=' . rawurlencode($preSetValue);
+			}
+		}
+
+		return $uri;
+	}
+
 }

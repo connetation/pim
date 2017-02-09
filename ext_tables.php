@@ -197,24 +197,39 @@ if (TYPO3_MODE == 'BE') {
         'CommerceTeam\\Commerce\\Controller\\Backend\\AccessAjaxController->ajaxSetAccess'
     );
 
-if (version_compare(TYPO3_version, '7.6', '>=')) {
-  /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
-  $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
-  $iconRegistry->registerIcon(
-    'tcarecords-pages-contains-commerce',
-    \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-    ['source' => 'EXT:commerce/Resources/Public/Icons/Table/commerce_folder.gif']
-  );
-  $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes']['contains-commerce'] = 'tcarecords-pages-contains-commerce';
-  unset($iconRegistry);
-} else {
-   // commerce icon
-  \TYPO3\CMS\Backend\Sprite\SpriteManager::addTcaTypeIcon(
-      'pages',
-      'contains-commerce',
-      PATH_TXCOMMERCE_REL . 'Resources/Public/Icons/Table/commerce_folder.gif'
-  );
-}
+
+
+
+
+
+
+
+	/** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
+	$iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+
+	$iconRegistry->registerIcon(
+		'icon-commerce',
+		\TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+		//['source' => 'EXT:commerce/Resources/Public/Icons/mod_main.svg']
+		['source' => 'EXT:commerce/Resources/Public/Icons/Table/commerce_folder.gif']
+	);
+
+	$iconRegistry->registerIcon(
+		'icon-commerce-category',
+		\TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+		['source' => 'EXT:commerce/Resources/Public/Icons/Table/categories.svg']
+	);
+
+	$iconRegistry->registerIcon(
+		'icon-commerce-product',
+		\TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+		['source' => 'EXT:commerce/Resources/Public/Icons/Table/products.svg']
+	);
+
+	$GLOBALS['TCA']['pages']['ctrl']['typeicon_classes']['contains-commerce'] = 'icon-commerce';
+	unset($iconRegistry);
+
+
 
 
     // Add default User TS config

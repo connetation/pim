@@ -83,6 +83,11 @@ class FolderRepository
      */
     public static function getFolders($module = 'commerce', $pid = 0, $title = '')
     {
+    	static $cache = array();
+    	if (isset($cache[$module][$pid][$title])) {
+    		return $cache[$module][$pid][$title];
+		}
+
         $row = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid, pid, title',
             'pages',
@@ -90,7 +95,8 @@ class FolderRepository
             ' AND module=\'' . $module . '\' ' . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('pages')
         );
 
-        return isset($row['uid']) ? array($row['uid'] => $row) : array();
+		$cache[$module][$pid][$title] = isset($row['uid']) ? array($row['uid'] => $row) : array();
+        return $cache[$module][$pid][$title];
     }
 
     /**

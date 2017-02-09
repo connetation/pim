@@ -1,3 +1,4 @@
+{namespace commerce = CommerceTeam\Commerce\ViewHelpers}
 <div class="panel panel-space panel-default recordlist">
 	<div class="panel-heading" style="color:#000;">
 		<f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product" /> (<span class="t3js-table-total-items"><f:count subject="{records}" /></span>)
@@ -7,7 +8,11 @@
 		<table class="table table-striped table-hover">
 			<thead>
 				<tr>
-					<th></th>
+					<th>
+						<commerce:be.newLink table="tx_commerce_products" preSetValues="{categories:parent.uid}" class="btn btn-default">
+							<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-add.svg" width="16" height="16">
+						</commerce:be.newLink>
+					</th>
 					<th class="col-title"><f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:tx_commerce_categories.title" /></th>
 					<th class="col-control"></th>
 				</tr>
@@ -17,14 +22,7 @@
 				<f:for each="{records}" as="record" iteration="iterator">
 					<f:render partial="Backend/ProductListRow" arguments="{record: record, parent: parent, iterator: iterator}"/>
 				</f:for>
-
-				<tr>
-					<td colspan="3">
-						<f:count subject="{records}" /> Records
-					</td>
-				</tr>
 			</tbody>
-
 		</table>
 	</div>
 </div>

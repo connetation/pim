@@ -2,6 +2,11 @@
 namespace CommerceTeam\Commerce\Controller\Backend;
 
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
+use TYPO3\CMS\Core\Imaging\Icon;
+
+use TYPO3\CMS\Backend\Template\Components\ButtonBar;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 
@@ -18,6 +23,14 @@ class CategoryController extends ActionController {
      * @var string
      */
     protected $defaultViewObjectName = BackendTemplateView::class;
+
+
+	/**
+	 * @var \CommerceTeam\Commerce\Utility\BackendUtility
+	 * @inject
+	 */
+	protected $commerceBeUtility;
+
 
 	/**
 	 * persistenceManager
@@ -55,14 +68,15 @@ class CategoryController extends ActionController {
 
 
 
-
     /**
      *
 	 * @param integer $parent
      * @return void
      */
     public function indexAction($parent = NULL) {
-    	$parent = $this->newCategoryRepository->findByUid($parent);
+		$parent = $this->newCategoryRepository->findByUid($parent);
+
+		$this->registerDocheaderButtons(!empty($parent) ? $parent->getUid() : 0);
 
     	if ($this->backendUserUtility->isInCommerceMount($parent)) {
     		if ($this->backendUserUtility->canAccess($parent, Permission::PAGE_SHOW)) {
@@ -269,6 +283,38 @@ class CategoryController extends ActionController {
 		}
 
 		$this->forwardIndex($parent);
+	}
+
+
+
+	/**
+	 * @param integer $parentUid
+	 */
+	protected function registerDocheaderButtons($parentUid) {
+		//$returnUrl = BackendUtility::getModuleUrl('commerce_category', []);
+		$returnUrl = null;
+		$menuItems = [
+			'newProduct' => [
+				'title'    => 'New product',
+				'href'     => $this->commerceBeUtility->getTcaNewRecordUrl('tx_commerce_products', $returnUrl, ['categories'=>$parentUid]),
+				'icon'     => $this->view->getModuleTemplate()->getIconFactory()->getIcon('icon-commerce-category', Icon::SIZE_SMALL),
+			],
+			'newCategory' => [
+				'title'    => 'New Category',
+				'href'     => $this->commerceBeUtility->getTcaNewRecordUrl('tx_commerce_categories', $returnUrl, ['parent_category'=>$parentUid]),
+				'icon'     => $this->view->getModuleTemplate()->getIconFactory()->getIcon('icon-commerce-product', Icon::SIZE_SMALL),
+			],
+		];
+
+		/** @var ButtonBar $buttonBar */
+		$buttonBar = $this->view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
+		foreach ($menuItems as $buttonConf) {
+			$addUserButton = $buttonBar->makeLinkButton()
+				->setHref($buttonConf['href'])
+				->setTitle($buttonConf['title'])
+				->setIcon($buttonConf['icon']);
+			$buttonBar->addButton($addUserButton, ButtonBar::BUTTON_POSITION_LEFT);
+		}
 	}
 
 }

@@ -3,7 +3,7 @@
 namespace CommerceTeam\Commerce\ViewHelpers\Be;
 
 use \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
-use \TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
 
 /**
  * This file is part of the TYPO3 CMS project.
@@ -25,7 +25,7 @@ use \TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  * @package TYPO3
  * @subpackage tx_commerce
  */
-class EditLinkViewHelper extends AbstractViewHelper {
+class NewLinkViewHelper extends AbstractViewHelper {
 
 	/**
 	 * @var \CommerceTeam\Commerce\Utility\BackendUtility
@@ -35,13 +35,14 @@ class EditLinkViewHelper extends AbstractViewHelper {
 
 	/**
 	 *
-	 * @param \TYPO3\CMS\Extbase\DomainObject\AbstractEntity $record Entity you generate Edit-Link for
+	 * @param string $table The table name you want to generate the New-Link for
 	 * @param string $returnUrl returnUrl
 	 * @param string $class class
+	 * @param array|null $preSetValues Preset Values
 	 * @return string
 	 */
-	public function render(AbstractEntity $record, $returnUrl = NULL, $class = '') {
-	    $uri = $this->commerceBeUtility->getTcaEditRecordUrl($record, $returnUrl);
+	public function render($table, $returnUrl = NULL, $class = '', array $preSetValues = null) {
+		$uri = $this->commerceBeUtility->getTcaNewRecordUrl($table, $returnUrl, $preSetValues);
 		return
 			'<a'
 				. ' href="' . $uri . '"'
