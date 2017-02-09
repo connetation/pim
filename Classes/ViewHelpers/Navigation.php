@@ -537,7 +537,8 @@ class Navigation
         }
 
         if ($this->pathParents) {
-            $this->processArrayPostRender($this->mTree, $this->pathParents, $this->mDepth);
+          
+            $this->processArrayPostRender($this->mTree ?: array(), $this->pathParents, $this->mDepth);
         }
 
         // never ever tough this piece of crap its needed to return an array
@@ -858,9 +859,9 @@ class Navigation
                     $nodeArray['_ADD_GETVARS'] = $this->separator . $this->prefixId . '[showUid]=' .
                         $nodeArray['_ADD_GETVARS'];
                 }
-
+                $idForCHash = $GLOBALS['TYPO3_CONF_VARS']['FE']['cHashIncludePageId'] ? ($this->separator . 'id=' . $uidPage ) : '';
                 $nodeArray['_ADD_GETVARS'] .= $this->separator . 'cHash=' .
-                    $this->generateChash($nodeArray['_ADD_GETVARS'] . $this->separator . 'id=' . $uidPage . $this->getFrontendController()->linkVars);
+                    $this->generateChash($nodeArray['_ADD_GETVARS'] . $idForCHash. $this->getFrontendController()->linkVars);
 
                 $treeList[$row['uid_local']] = $nodeArray;
             }
@@ -1113,7 +1114,7 @@ class Navigation
                                 $treeArray[$nodeId]['ITEM_STATES_LIST'] = 'CURIFSUB,CUR,ACTIFSUB,ACT,NO';
                             }
                         }
-                        $this->processArrayPostRender($treeArray[$nodeId]['--subLevel--'], $path, $mDepth - 1);
+                        $this->processArrayPostRender($treeArray[$nodeId]['--subLevel--'] ?: array(), $path, $mDepth - 1);
                         if (!empty($treeArray[$nodeId]['--subLevel--'])) {
                             $treeArray[$nodeId]['_SUB_MENU'] = $treeArray[$nodeId]['--subLevel--'];
                         }
@@ -1358,7 +1359,8 @@ class Navigation
                 $addGetvars .= $this->separator . $this->prefixId . '[basketHashValue]=' .
                     $this->gpVars['basketHashValue'];
             }
-            $cHash = $this->generateChash($addGetvars . $this->getFrontendController()->linkVars);
+            $idForCHash = $GLOBALS['TYPO3_CONF_VARS']['FE']['cHashIncludePageId'] ? ($this->separator . 'id=' . $this->pid ) : '';
+            $cHash = $this->generateChash($addGetvars . $idForCHash . $this->getFrontendController()->linkVars);
 
             /*
              * Currently no Navtitle in tx_commerce_products

@@ -173,7 +173,6 @@ class CategoryController extends ActionController {
 		$this->forwardIndex($parent);
     }
 
-
     /**
      * @param integer $category
 	 * @param integer $parent
