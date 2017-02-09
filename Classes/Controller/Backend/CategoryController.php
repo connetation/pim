@@ -155,7 +155,6 @@ class CategoryController extends ActionController {
 		$this->forwardIndex($parent);
     }
 
-
     /**
      * @param integer $category
 	 * @param integer $parent
@@ -164,7 +163,6 @@ class CategoryController extends ActionController {
     public function downAction($category, $parent = NULL) {
     	$parent = $this->newCategoryRepository->findByUid($parent);
 		$category = $this->newCategoryRepository->findByUid($category);
-
 		$this->newCategoryRepository->sortUpDown($category, false, $parent);
 
 		$this->forwardIndex($parent);

@@ -408,7 +408,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 									</enabledControls>
 								</appearance>-->
 								<type>user</type>
-								<userFunc>CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility->existingArticles</userFunc>
+								<userFunc>CommerceTeam\Commerce\Utility\ArticleCreatorUtility->existingArticles</userFunc>
 							</config>
 						</TCEforms>
 					</existingArticles>
@@ -426,7 +426,7 @@ $GLOBALS['TCA']['tx_commerce_products'] = array(
 						<TCEforms>
 							<config>
 								<type>user</type>
-								<userFunc>CommerceTeam\\Commerce\\Utility\\ArticleCreatorUtility->producibleArticles</userFunc>
+								<userFunc>CommerceTeam\Commerce\Utility\ArticleCreatorUtility->producibleArticles</userFunc>
 							</config>
 						</TCEforms>
 					</producibleArticles>
