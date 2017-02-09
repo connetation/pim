@@ -1,3 +1,26 @@
+config.tx_extbase {
+	objects {
+		TYPO3\CMS\Extbase\Persistence\QueryResultInterface {
+			className = CommerceTeam\Commerce\Utility\QueryResult
+		}
+	}
+}
+
+config.tx_extbase.persistence.classes.CommerceTeam\Commerce\Domain\Model\NewCategory {
+	mapping {
+		tableName = tx_commerce_categories
+		columns {
+			perms_userid.mapOnProperty    = permsUserid
+			perms_user.mapOnProperty      = permsUser
+			perms_group.mapOnProperty     = permsGroup
+			perms_groupid.mapOnProperty   = permsGroupid
+			perms_everybody.mapOnProperty = permsEverybody
+		}
+	}
+}
+
+
+
 plugin.tx_commerce {
 	settings {
 	}
@@ -5,11 +28,7 @@ plugin.tx_commerce {
 	persistence {
 		#storagePid = 1
 		classes {
-			CommerceTeam\Commerce\Domain\Model\NewCategory {
-				mapping {
-					tableName = tx_commerce_categories
-				}
-			}
+			CommerceTeam\Commerce\Domain\Model\NewCategory < config.tx_extbase.persistence.classes.CommerceTeam\Commerce\Domain\Model\NewCategory
 			CommerceTeam\Commerce\Domain\Model\NewProduct {
 				mapping {
 					tableName = tx_commerce_products
@@ -24,6 +43,10 @@ plugin.tx_commerce {
         partialRootPaths.0  = EXT:commerce/Resources/Private/Partials/
     }
 }
+
+
+
+
 
 
 module.tx_commerce {

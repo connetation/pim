@@ -22,13 +22,14 @@ require_once($BACK_PATH . 'init.php');
 if (!(defined('TYPO3_REQUESTTYPE') && defined('TYPO3_REQUESTTYPE_AJAX')) ||
     !(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_AJAX)
 ) {
+	//echo '<h1>In "SystemdataNavigationFrame" index.php</h1>';
     /**
      * System data navigation frame viewhelper.
      *
-     * @var \CommerceTeam\Commerce\Controller\SystemdataNavigationFrameController $systemdataNavigationFrameController
+     * @var \CommerceTeam\Commerce\Controller\Backend\SystemdataNavigationFrameController $systemdataNavigationFrameController
      */
     $systemdataNavigationFrameController = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-        'CommerceTeam\\Commerce\\Controller\\SystemdataNavigationFrameController'
+        'CommerceTeam\\Commerce\\Controller\\Backend\\SystemdataNavigationFrameController'
     );
     $systemdataNavigationFrameController->initPage();
     $systemdataNavigationFrameController->main();

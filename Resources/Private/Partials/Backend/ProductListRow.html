@@ -1,0 +1,54 @@
+{namespace commerce = CommerceTeam\Commerce\ViewHelpers}
+<tr>
+	<td></td>
+	<td class="col-title">{record.title}</td>
+	<td class="col-control">
+
+		<commerce:be.ifPermission category="{parent}" permission="editContent">
+			<div class="btn-group" role="group">
+				<commerce:be.editLink record="{record}" class="btn btn-default">
+					<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-open.svg" width="16" height="16">
+				</commerce:be.editLink>
+				<f:if condition="{record.hidden}">
+					<f:then>
+						<f:link.action action="unhideProduct" arguments="{product: record.uid, parent: parent.uid}" class="btn btn-default">
+							<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-edit-unhide.svg" width="16" height="16">
+						</f:link.action>
+					</f:then>
+					<f:else>
+						<f:link.action action="hideProduct" arguments="{product: record.uid, parent: parent.uid}" class="btn btn-default">
+							<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-edit-hide.svg" width="16" height="16">
+						</f:link.action>
+					</f:else>
+				</f:if>
+
+				<f:link.action action="deleteProduct" arguments="{product: record.uid, parent: parent.uid}" class="btn btn-default">
+					<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-edit-delete.svg" width="16" height="16">
+				</f:link.action>
+			</div>
+
+			<div class="btn-group" role="group">
+				<f:if condition="{iterator.isFirst}">
+					<f:then>
+						<span class="btn btn-default disabled"><span class="t3js-icon icon icon-size-small icon-state-default icon-empty-empty" data-identifier="empty-empty"></span></span>
+					</f:then>
+					<f:else>
+						<f:link.action action="upProduct" arguments="{product: record.uid, parent: parent.uid}" class="btn btn-default">
+							<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-move-up.svg" width="16" height="16">
+						</f:link.action>
+					</f:else>
+				</f:if>
+				<f:if condition="{iterator.isLast}">
+					<f:then>
+						<span class="btn btn-default disabled"><span class="t3js-icon icon icon-size-small icon-state-default icon-empty-empty" data-identifier="empty-empty"></span></span>
+					</f:then>
+					<f:else>
+						<f:link.action action="downProduct" arguments="{product: record.uid, parent: parent.uid}" class="btn btn-default">
+							<img src="/typo3/sysext/core/Resources/Public/Icons/T3Icons/actions/actions-move-down.svg" width="16" height="16">
+						</f:link.action>
+					</f:else>
+				</f:if>
+			</div>
+		</commerce:be.ifPermission>
+	</td>
+</tr>

@@ -5,6 +5,7 @@ CREATE TABLE be_groups (
 	tx_commerce_mountpoints tinytext
 );
 
+
 #
 # Table structure for table 'be_users'
 #

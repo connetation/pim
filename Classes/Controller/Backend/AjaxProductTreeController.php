@@ -24,6 +24,31 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AjaxProductTreeController {
 
+
+	/**
+	 * categoryTree
+	 *
+	 * @var \CommerceTeam\Commerce\Tree\CategoryTree
+	 */
+	protected $categoryTree;
+
+
+	/**
+	 * Backend utility.
+	 *
+	 * @var \CommerceTeam\Commerce\Utility\BackendUserUtility $backendUserUtility
+	 */
+	protected $backendUserUtility;
+
+
+
+	public function __construct() {
+		$this->backendUserUtility = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Utility\\BackendUserUtility');
+		$this->categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree');
+	}
+
+
+
     /**
      * Makes the AJAX call to expand or collapse the categorytree.
      * Called by typo3/ajax.php.
@@ -34,51 +59,62 @@ class AjaxProductTreeController {
      * @return void
      */
     public function ajaxExpandCollapse(array $paramsRaw, AjaxRequestHandler &$ajaxObj) {
-    	$params = $paramsRaw['request']->getQueryParams();
+        $params = $paramsRaw['request']->getQueryParams();
 
-		if (isset($params['action']) && isset($params['table']) && isset($params['uid']) && isset($params['treeId'])) {
-			$treeId = $params['treeId'];
-			$treeState = unserialize($GLOBALS['BE_USER']->uc[$treeId]);
-			if ($params['action'] == 'collapse') {
-				if (isset($treeState[$params['table']][$params['uid']])) {
-					unset($treeState[$params['table']][$params['uid']]);
-				}
-			} else {
-				$treeState[$params['table']][$params['uid']] = $params['uid'];
-			}
+        $treeState = null;
+        if (isset($params['action'], $params['table'], $params['uid'], $params['treeId'])) {
+            $treeId = $params['treeId'];
+            $treeState = unserialize($GLOBALS['BE_USER']->uc[$treeId]);
+            if ($params['action'] === 'collapse') {
+                if (isset($treeState[$params['table']][$params['uid']])) {
+                    unset($treeState[$params['table']][$params['uid']]);
+                }
+            } else {
+                $treeState[$params['table']][$params['uid']] = $params['uid'];
+            }
 
-			$GLOBALS['BE_USER']->uc[$treeId] = serialize($treeState);
-			$GLOBALS['BE_USER']->writeUC();
-		}
+            $GLOBALS['BE_USER']->uc[$treeId] = serialize($treeState);
+            $GLOBALS['BE_USER']->writeUC();
+        }
 
-        $ajaxObj->addContent('tree', var_export($treeState, true));
+        //$ajaxObj->addContent('tree', var_export($treeState, true));
     }
 
     /**
      * Makes the AJAX call to expand or collapse the categorytree.
      * Called by typo3/ajax.php.
      *
-     * @param array $params Additional parameters (not used here)
+     * @param array $paramsRaw Additional parameters (not used here)
      * @param AjaxRequestHandler $ajaxObj Ajax object
      *
      * @return void
      */
-    public function ajaxGetCategoryTreeData(array $paramsRaw, AjaxRequestHandler &$ajaxObj) {
+    public function ajaxGetCategoryTreeData(array $paramsRaw, AjaxRequestHandler $ajaxObj) {
 		$params = $paramsRaw['request']->getQueryParams();
 
-		$treeId = null;
-		if (isset($params['treeId'])) {
-			$treeId = $params['treeId'];
-		}
-
-		$treeConf = [];
 		if (isset($params['treeConf'])) {
-			$treeConf = $params['treeConf'];
+			$this->categoryTree->setTreeConf($params['treeConf']);
 		}
 
-        $categoryTree = GeneralUtility::makeInstance('CommerceTeam\\Commerce\\Tree\\CategoryTree', $treeConf);
+		if (isset($params['treeId'])) {
+			$preExpandedState = unserialize($GLOBALS['BE_USER']->uc[$params['treeId']]);
+			if (is_array($preExpandedState)) {
+				$this->categoryTree->setPreExpanded($preExpandedState);
+			}
+		}
 
-        $ajaxObj->addContent('tree', $categoryTree->getTreeJSON($treeId));
+		$this->categoryTree->setMountPoints(
+			$this->backendUserUtility->getCommerceMounts()
+		);
+
+		$treeData = $this->categoryTree->getTree();
+        $treeData['recordEdit'] = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('record_edit');
+        $treeData['productPID'] = \CommerceTeam\Commerce\Utility\BackendUtility::getProductFolderUid();
+
+        $ajaxObj->addContent(
+        	'tree',
+        	json_encode($treeData)
+        );
     }
 
 }
