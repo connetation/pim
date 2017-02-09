@@ -18,17 +18,17 @@ $tempColumns = array(
     'tx_commerce_mountpoints' => array(
         'label' => 'LLL:EXT:commerce/Resources/Private/Language/locallang_db.xml:label.tx_commerce_mountpoints',
         'config' => array(
-            // a special format is stored - that's why 'passthrough'
-            // see: flag TCEFormsSelect_prefixTreeName
-            // see: tx_dam_treelib_tceforms::getMountsForTree()
-            'type' => 'passthrough',
-            'form_type' => 'user',
-            'userFunc' => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc->getSingleField_selectCategories',
-            'treeViewBrowseable' => true,
-            'size' => 10,
-            'autoSizeMax' => 30,
-            'minitems' => 0,
-            'maxitems' => 20,
+            'type'          => 'user',
+            'allowed'       => 'tx_commerce_categories',
+            'form_type'     => 'user',
+            'userFunc'      => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc->getSingleField_selectCategories',
+            'treeView'      => 1,
+            'treeClass'     => 'CommerceTeam\\Commerce\\ViewHelpers\\TceFunc\\CategoryTree',
+			'mountRootOnly' => true,
+            'size'          => 10,
+            'autoSizeMax'   => 30,
+            'minitems'      =>  0,
+            'maxitems'      => 20,
         ),
     ),
 );

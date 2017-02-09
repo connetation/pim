@@ -1,11 +1,9 @@
 <?php
 namespace CommerceTeam\Commerce\Controller\Backend;
 
+use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
-
-use CommerceTeam\Commerce\Domain\Repository\NewCategoryRepository;
-use CommerceTeam\Commerce\Domain\Repository\NewProductRepository;
 
 
 /**
@@ -45,20 +43,15 @@ class CategoryController extends ActionController {
 	 */
 	protected $newProductRepository;
 
+
 	/**
-	 * ObjectManager
+	 * Backend utility.
 	 *
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+	 * @var \CommerceTeam\Commerce\Utility\BackendUserUtility
 	 * @inject
 	 */
-	protected $objectManager;
+	protected $backendUserUtility;
 
-    /* *
-     * BackendTemplateContainer
-     *
-     * @var BackendTemplateView
-     */
-    // protected $view;
 
 
 
@@ -71,16 +64,20 @@ class CategoryController extends ActionController {
     public function indexAction($parent = NULL) {
     	$parent = $this->newCategoryRepository->findByUid($parent);
 
-		$this->view->assign('parent', $parent);
+    	if ($this->backendUserUtility->isInCommerceMount($parent)) {
+    		if ($this->backendUserUtility->canAccess($parent, Permission::PAGE_SHOW)) {
+				$this->view->assign('parent', $parent);
+			}
 
-		$products = $this->newProductRepository->findProductsOfCategory($parent);
-		if (!empty($products)) {
-			$this->view->assign('products', $products);
-		}
+			$products = $this->newProductRepository->findProductsOfCategory($parent);
+			if (!empty($products)) {
+				$this->view->assign('products', $products);
+			}
 
-		$categories = $this->newCategoryRepository->findSubCategories($parent);
-		if (!empty($categories)) {
-        	$this->view->assign('categories', $categories);
+			$categories = $this->newCategoryRepository->findSubCategories($parent, Permission::PAGE_SHOW);
+			if (!empty($categories)) {
+				$this->view->assign('categories', $categories);
+			}
 		}
     }
 
@@ -105,13 +102,14 @@ class CategoryController extends ActionController {
     	$parent = $this->newCategoryRepository->findByUid($parent);
 		$category = $this->newCategoryRepository->findByUid($category);
 
-    	$this->newCategoryRepository->update($category->setHidden(true));
+		if ($this->backendUserUtility->isInCommerceMount($category) && $this->backendUserUtility->canAccess($category, Permission::PAGE_EDIT)) {
+			$this->newCategoryRepository->update($category->setHidden(true));
+		}
 
 		$this->forwardIndex($parent);
     }
 
-
-    /**
+	/**
      * @param integer $category
 	 * @param integer $parent
      * @return void
@@ -120,7 +118,9 @@ class CategoryController extends ActionController {
     	$parent = $this->newCategoryRepository->findByUid($parent);
 		$category = $this->newCategoryRepository->findByUid($category);
 
-		$this->newCategoryRepository->update($category->setHidden(false));
+		if ($this->backendUserUtility->isInCommerceMount($category) && $this->backendUserUtility->canAccess($category, Permission::PAGE_EDIT)) {
+			$this->newCategoryRepository->update($category->setHidden(false));
+		}
 
 		$this->forwardIndex($parent);
     }
@@ -135,7 +135,9 @@ class CategoryController extends ActionController {
     	$parent = $this->newCategoryRepository->findByUid($parent);
 		$category = $this->newCategoryRepository->findByUid($category);
 
-		$this->newCategoryRepository->remove($category);
+		if ($this->backendUserUtility->isInCommerceMount($category) && $this->backendUserUtility->canAccess($category, Permission::PAGE_DELETE)) {
+			$this->newCategoryRepository->remove($category);
+		}
 
 		$this->forwardIndex($parent);
     }
@@ -150,7 +152,9 @@ class CategoryController extends ActionController {
     	$parent = $this->newCategoryRepository->findByUid($parent);
 		$category = $this->newCategoryRepository->findByUid($category);
 
-    	$this->newCategoryRepository->sortUpDown($category, true, $parent);
+		if ($this->backendUserUtility->isInCommerceMount($category) && $this->backendUserUtility->canAccess($category, Permission::PAGE_EDIT)) {
+			$this->newCategoryRepository->sortUpDown($category, true, $parent);
+		}
 
 		$this->forwardIndex($parent);
     }
@@ -163,11 +167,107 @@ class CategoryController extends ActionController {
     public function downAction($category, $parent = NULL) {
     	$parent = $this->newCategoryRepository->findByUid($parent);
 		$category = $this->newCategoryRepository->findByUid($category);
-		$this->newCategoryRepository->sortUpDown($category, false, $parent);
+
+		if ($this->backendUserUtility->isInCommerceMount($category) && $this->backendUserUtility->canAccess($category, Permission::PAGE_EDIT)) {
+			$this->newCategoryRepository->sortUpDown($category, false, $parent);
+		}
 
 		$this->forwardIndex($parent);
     }
 
 
+
+
+
+
+
+
+
+
+	/**
+	 *
+	 * @param integer $product
+	 * @param integer $parent
+	 * @return void
+	 */
+	public function hideProductAction($product, $parent = NULL) {
+		$parent = $this->newCategoryRepository->findByUid($parent);
+		$product = $this->newProductRepository->findByUid($product);
+
+		if ($this->backendUserUtility->isInCommerceMount($parent) && $this->backendUserUtility->canAccess($parent, Permission::CONTENT_EDIT)) {
+			$this->newProductRepository->update($product->setHidden(true));
+		}
+
+		$this->forwardIndex($parent);
+	}
+
+
+	/**
+	 *
+	 * @param integer $product
+	 * @param integer $parent
+	 * @return void
+	 */
+	public function unhideProductAction($product, $parent = NULL) {
+		$parent = $this->newCategoryRepository->findByUid($parent);
+		$product = $this->newProductRepository->findByUid($product);
+
+		if ($this->backendUserUtility->isInCommerceMount($parent) && $this->backendUserUtility->canAccess($parent, Permission::CONTENT_EDIT)) {
+			$this->newProductRepository->update($product->setHidden(false));
+		}
+
+		$this->forwardIndex($parent);
+	}
+
+
+	/**
+	 * @param integer $product
+	 * @param integer $parent
+	 * @return void
+	 */
+	public function deleteProductAction($product, $parent = NULL) {
+		$parent = $this->newCategoryRepository->findByUid($parent);
+		$product = $this->newProductRepository->findByUid($product);
+
+		if ($this->backendUserUtility->isInCommerceMount($parent) && $this->backendUserUtility->canAccess($parent, Permission::CONTENT_EDIT)) {
+			$this->newProductRepository->remove($product);
+		}
+
+		$this->forwardIndex($parent);
+	}
+
+
+	/**
+	 * @param integer $product
+	 * @param integer $parent
+	 * @return void
+	 */
+	public function upProductAction($product, $parent = NULL) {
+		$parent = $this->newCategoryRepository->findByUid($parent);
+		$product = $this->newProductRepository->findByUid($product);
+
+		if ($this->backendUserUtility->isInCommerceMount($parent) && $this->backendUserUtility->canAccess($parent, Permission::CONTENT_EDIT)) {
+			$this->newProductRepository->sortUpDown($product, true, $parent);
+		}
+
+		$this->forwardIndex($parent);
+	}
+
+
+	/**
+	 * @param integer $product
+	 * @param integer $parent
+	 * @return void
+	 */
+	public function downProductAction($product, $parent = NULL) {
+		$parent = $this->newCategoryRepository->findByUid($parent);
+		$product = $this->newProductRepository->findByUid($product);
+
+		if ($this->backendUserUtility->isInCommerceMount($parent) && $this->backendUserUtility->canAccess($parent, Permission::CONTENT_EDIT)) {
+			$this->newProductRepository->sortUpDown($product, false, $parent);
+		}
+
+		$this->forwardIndex($parent);
+	}
 
 }

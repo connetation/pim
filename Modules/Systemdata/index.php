@@ -16,10 +16,10 @@
 /**
  * Module 'Systemdata' for the 'commerce' extension.
  *
- * @var \CommerceTeam\Commerce\Controller\SystemdataModuleController $systemdataModuleController
+ * @var \CommerceTeam\Commerce\Controller\Backend\SystemdataModuleController $systemdataModuleController
  */
 $systemdataModuleController = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-    'CommerceTeam\\Commerce\\Controller\\SystemdataModuleController'
+    'CommerceTeam\\Commerce\\Controller\\Backend\\SystemdataModuleController'
 );
 $systemdataModuleController->main();
 $systemdataModuleController->printContent();

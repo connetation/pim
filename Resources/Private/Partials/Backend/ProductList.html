@@ -1,12 +1,6 @@
-{namespace be = TYPO3\CMS\Backend\ViewHelpers}
-{namespace bu = TYPO3\CMS\Beuser\ViewHelpers}
-{namespace core = TYPO3\CMS\Core\ViewHelpers}
-{namespace commerce = CommerceTeam\Commerce\ViewHelpers}
-
-
 <div class="panel panel-space panel-default recordlist">
 	<div class="panel-heading" style="color:#000;">
-		<f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:{recordType}" /> (<span class="t3js-table-total-items"><f:count subject="{records}" /></span>)
+		<f:translate key="LLL:EXT:commerce/Resources/Private/Language/locallang_be.xml:product" /> (<span class="t3js-table-total-items"><f:count subject="{records}" /></span>)
 	</div>
 
 	<div class="table-fit">
@@ -21,9 +15,7 @@
 
 			<tbody>
 				<f:for each="{records}" as="record" iteration="iterator">
-					<commerce:be.ifPermission category="{record}" permission="show">
-						<f:render partial="Backend/CategoryListRow" arguments="{record: record, parent: parent, iterator: iterator}"/>
-					</commerce:be.ifPermission>
+					<f:render partial="Backend/ProductListRow" arguments="{record: record, parent: parent, iterator: iterator}"/>
 				</f:for>
 
 				<tr>

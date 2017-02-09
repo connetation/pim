@@ -72,7 +72,7 @@ TYPO3.Commercecategory.Navigator = Ext.extend(Ext.Panel, {
                 source: {url: TYPO3.settings.ajaxUrls['CommerceTeam_Commerce_ProductTree::ajaxGetCategoryTreeData'], data: {treeId: 'commerceNavigationTree'}},
                 toggleEffect: false,
                 minExpandLevel: 2,
-                extensions: ["filter"],
+                extensions: ["filter", "clones"],
                 quicksearch: true,
                 filter: {
                     autoApply: true,   // Re-apply last filter if lazy data is loaded

@@ -17,6 +17,8 @@ namespace CommerceTeam\Commerce\Utility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+use CommerceTeam\Commerce\Domain\Model\NewCategory;
+
 /**
  * A metaclass for creating inputfield fields in the backend.
  *
@@ -267,4 +269,104 @@ class BackendUserUtility implements SingletonInterface
     {
         return $GLOBALS['TYPO3_DB'];
     }
+
+
+
+
+    public function getCommerceMounts() {
+        static $mountPoints = FALSE;
+
+        if ($mountPoints === FALSE) {
+            $mountPoints = [];
+
+            if ($GLOBALS['BE_USER']->isAdmin()) {
+                $mountPoints[0] = '0';
+            }
+
+            $addMountsPoints = function($newMountPointsString) use (&$mountPoints) {
+                if ($newMountPointsString !== NULL && $newMountPointsString !== '') {
+                    $mountPoints = array_merge($mountPoints, GeneralUtility::trimExplode(',', $newMountPointsString));
+                    //$newMountPoints = GeneralUtility::trimExplode(',', $newMountPointsString);
+                    //foreach ($newMountPoints as $newMountPoint) {
+                    //    $mountPoints[$newMountPoint] = $newMountPoint;
+                    //}
+                }
+            };
+
+            $addMountsPoints($GLOBALS['BE_USER']->user['tx_commerce_mountpoints']);
+
+            foreach ($GLOBALS['BE_USER']->userGroups as $groupUid => $group) {
+                $addMountsPoints($group['tx_commerce_mountpoints']);
+            }
+
+            $mountPoints = array_unique($mountPoints);
+        }
+
+        return $mountPoints;
+    }
+
+	/**
+	 * Checks if a category is within the current be-users commerce-mount.
+	 * NULL to check the (virtual) root category.
+	 *
+	 * @param NewCategory|null $category The category to check. NULL to check the (virtual) root category.
+	 * @return bool
+	 */
+	public function isInCommerceMount(NewCategory $category = NULL) {
+		if ($GLOBALS['BE_USER']->isAdmin()) {
+			return TRUE;
+		}
+
+		$uid = $category===NULL ? 0 : $category->getUid();
+
+    	static $checkCache = [];
+
+    	if (! isset($checkCache[$uid])) {
+
+			$mounts = $this->getCommerceMounts();
+
+			$checkCache[$uid] = FALSE;
+
+			if (in_array($uid, $mounts, false)) {
+				$checkCache[$uid] = TRUE;
+			} else if ($category !== NULL) {
+				foreach ($category->getParentCategories() as $parent) {
+					if ($checkCache[$uid] |= $this->isInCommerceMount($parent)) {
+						break;
+					}
+				}
+			}
+		}
+
+		return $checkCache[$uid];
+	}
+
+
+	public function getAccessRights($category) {
+		if ($GLOBALS['BE_USER']->isAdmin()) {
+			return 31;
+		}
+
+		$out = 0;
+		if (isset($category['perms_userid'], $category['perms_user'], $category['perms_groupid'], $category['perms_group'], $category['perms_everybody'], $GLOBALS['BE_USER']->groupList)) {
+			//\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($category, 'Yeeehaa');
+			if ($GLOBALS['BE_USER']->user['uid'] === $category['perms_userid']) {
+				$out |= $category['perms_user'];
+			}
+			if ($GLOBALS['BE_USER']->isMemberOfGroup($category['perms_groupid'])) {
+				$out |= $category['perms_group'];
+			}
+			$out |= $category['perms_everybody'];
+		}
+
+		return $out;
+	}
+
+
+	public function canAccess($category, $askForPermission) {
+    	$perm = $this->getAccessRights($category);
+		//\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($perm, $askForPermission);
+		return (($perm & $askForPermission) === $askForPermission);
+	}
+
 }

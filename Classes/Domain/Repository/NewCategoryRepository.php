@@ -2,7 +2,6 @@
 namespace CommerceTeam\Commerce\Domain\Repository;
 
 use CommerceTeam\Commerce\Domain\Model\NewCategory;
-use CommerceTeam\Commerce\Domain\Nodel\NewProduct;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -51,9 +50,9 @@ class NewCategoryRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	 * @param \CommerceTeam\Commerce\Domain\Model\NewCategory $parent
 	 * @return integer
      */
-	protected function getParentUid(NewCategory $parent = NULL) {
-		if ($parent != NULL) {
-			return intval($parent->getUid());
+	protected function uidOrZero(NewCategory $parent = NULL) {
+		if ($parent !== NULL) {
+			return (int)$parent->getUid();
 		}
 		return 0;
 	}
@@ -63,15 +62,41 @@ class NewCategoryRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
     /**
 	 * @param \CommerceTeam\Commerce\Domain\Model\NewCategory $parent
      */
-	public function findSubCategories(NewCategory $parent = NULL) {
+	public function findSubCategories(NewCategory $parent = NULL, $bePermissions = 0) {
+		$permWhere = ' WHERE mm.uid_foreign = ' . $this->uidOrZero($parent) . ' AND c.sys_language_uid = 0 AND c.deleted = 0';
+		if ($bePermissions > 0) {
+			$permWhere .= ' AND (' . $this->beUserPermsWhere($bePermissions) . ')';
+		}
+
 		$query = $this->createQuery();
 		return $query->statement(
 			'SELECT c.* FROM tx_commerce_categories c'
 			. ' JOIN tx_commerce_categories_parent_category_mm mm'
 			. ' ON c.uid = mm.uid_local'
-			. ' WHERE mm.uid_foreign = ' . $this->getParentUid($parent) . ' AND c.sys_language_uid = 0 AND c.deleted = 0'
+			. $permWhere
 			. ' ORDER BY mm.sorting'
-		)->execute(true);
+		)->execute();
+	}
+
+
+
+	/**
+	 * @param \CommerceTeam\Commerce\Domain\Model\NewCategory $child
+	 */
+	public function findParentCategories(NewCategory $child, $bePermissions = 0) {
+		$permWhere = ' WHERE mm.uid_local = ' . ((int)$child->getUid()) . ' AND c.sys_language_uid = 0 AND c.deleted = 0';
+		if ($bePermissions > 0) {
+			$permWhere .= ' AND (' . $this->beUserPermsWhere($bePermissions) . ')';
+		}
+
+		$query = $this->createQuery();
+		return $query->statement(
+			'SELECT c.* FROM tx_commerce_categories c'
+			. ' JOIN tx_commerce_categories_parent_category_mm mm'
+			. ' ON c.uid = mm.uid_foreign'
+			. $permWhere
+			. ' ORDER BY mm.sorting'
+		)->execute();
 	}
 
 
@@ -87,7 +112,7 @@ class NewCategoryRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
     	$mms = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
     		'mm.*',
     		'tx_commerce_categories_parent_category_mm mm JOIN tx_commerce_categories c ON mm.uid_local = c.uid',
-    		'uid_foreign = ' . $this->getParentUid($parent) . ' AND c.deleted = 0',
+    		'uid_foreign = ' . $this->uidOrZero($parent) . ' AND c.deleted = 0',
     		'', 'mm.sorting ' . ($up?'DESC':'ASC')
 		);
 
@@ -116,7 +141,26 @@ class NewCategoryRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 				$sorting = $up ? ($sorting-8) : ($sorting+8);
 			}
 		}
-		return;
     }
+
+
+	public function beUserPermsWhere($perms) {
+		if (is_array($GLOBALS['BE_USER']->user)) {
+			if ($GLOBALS['BE_USER']->isAdmin()) {
+				return '1=1';
+			}
+
+			$perms = (int) $perms;
+			$where = 'c.perms_everybody & ' . $perms . ' = ' . $perms
+				. ' OR (c.perms_userid = ' . $GLOBALS['BE_USER']->user['uid'] . ' AND c.perms_user & ' . $perms . ' = ' . $perms . ')';
+
+			if ($GLOBALS['BE_USER']->groupList) {
+				$where .= ' OR (c.perms_groupid in (' . $GLOBALS['BE_USER']->groupList . ') AND c.perms_group & ' . $perms . ' = ' . $perms . ')';
+			}
+
+			return $where;
+		}
+		return '1=0';
+	}
 
 }

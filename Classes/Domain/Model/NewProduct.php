@@ -79,6 +79,37 @@ class NewProduct extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
 
 
+	public function offsetSet($offset, $value) {
+		$methodName = 'set' . $this->underscoreToCamelCase($offset);
+		if (method_exists($this, $methodName)) {
+			$this->{$methodName}($value);
+		}
+	}
+
+	public function offsetExists($offset) {
+		$methodName = 'set' . $this->underscoreToCamelCase($offset);
+		return method_exists($this, $methodName);
+	}
+
+	public function offsetUnset($offset) {
+	}
+
+	public function offsetGet($offset) {
+		$methodName = 'get' . $this->underscoreToCamelCase($offset);
+		if (method_exists($this, $methodName)) {
+			return $this->{$methodName}();
+		}
+	}
+
+	private function underscoreToCamelCase($string) {
+		$str = str_replace(' ', '', ucwords(str_replace('_', ' ', $string)));
+		lcfirst($str);
+		return $str;
+	}
+
+
+
+
     /**
      * Returns the product description.
      *

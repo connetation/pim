@@ -1,9 +1,11 @@
 <?php
 namespace CommerceTeam\Commerce\Domain\Repository;
 
-use CommerceTeam\Commerce\Domain\Model\NewCategory;
-use CommerceTeam\Commerce\Domain\Nodel\NewProduct;
+use \TYPO3\CMS\Extbase\Persistence\Repository;
+use \TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
+use CommerceTeam\Commerce\Domain\Model\NewCategory;
+use CommerceTeam\Commerce\Domain\Model\NewProduct;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -22,37 +24,35 @@ use CommerceTeam\Commerce\Domain\Nodel\NewProduct;
  * Database Class for tx_commerce_products. All database calls should
  * be made by this class. In most cases you should use the methodes
  * provided by tx_commerce_category to get informations for articles.
- *
  * Class \CommerceTeam\Commerce\Domain\Repository\ProductRepository
  *
  * @author Anselm Ruby <a.ruby@connetation.at>
  */
-class NewProductRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
+class NewProductRepository extends Repository {
 
 	public function initializeObject() {
-		$querySettings = $this->objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings::class);
+		$querySettings = $this->objectManager->get(Typo3QuerySettings::class);
 		$querySettings->setRespectStoragePage(false);
 		$querySettings->setIgnoreEnableFields(true);
 		$this->setDefaultQuerySettings($querySettings);
 	}
 
-
 	/**
-	 * We overwrit this default method becaus we want to find hidden records
+	 * We overwrite this default method because we want to find hidden records
 	 *
-	 * @param integer $uid
+	 * @param mixed $uid
+	 * @return \CommerceTeam\Commerce\Domain\Model\NewProduct|null
 	 */
 	public function findByIdentifier($uid) {
 		$query = $this->createQuery();
 		return $query->matching($query->equals('uid', (int)$uid))->execute()->getFirst();
 	}
 
-
-    /**
+	/**
 	 * @param \CommerceTeam\Commerce\Domain\Model\NewCategory $category
-     */
-	public function findProductsOfCategory(NewCategory $category = NULL) {
-		$parentUid = $category == NULL ? 0 : intval($category->getUid());
+	 */
+	public function findProductsOfCategory(NewCategory $category = null) {
+		$parentUid = $category === null ? 0 : (int)$category->getUid();
 
 		$query = $this->createQuery();
 		$st = $query->statement(
@@ -62,25 +62,24 @@ class NewProductRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 			. ' WHERE mm.uid_foreign = ' . $parentUid . ' AND p.sys_language_uid = 0 AND p.deleted = 0'
 			. ' ORDER BY mm.sorting'
 		);
-		return $st->execute(true);
+		return $st->execute();
 	}
 
-
-
-    /**
-     * @param \CommerceTeam\Commerce\Domain\Model\NewProduct $toSortUp
+	/**
+	 * @param \CommerceTeam\Commerce\Domain\Model\NewProduct $toSortUp
+	 * @param bool $up True to move the product up, fals to move it down
 	 * @param \CommerceTeam\Commerce\Domain\Model\NewCategory $parent
-     * @return void
-     */
-    public function sortUpDown(NewProduct & $toSortUp, $up = true, NewCategory $parent = NULL) {
-    	$meUid = $toSortUp->getUid();
-		$parentUid = $parent == NULL ? 0 : intval($parent->getUid());
+	 * @return void
+	 */
+	public function sortUpDown(NewProduct $toSortUp, $up = true, NewCategory $parent = null) {
+		$meUid = $toSortUp->getUid();
+		$parentUid = $parent === null ? 0 : (int)$parent->getUid();
 
-    	$mms = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-    		'mm.*',
-    		'tx_commerce_products_categories_mm mm JOIN tx_commerce_products p ON mm.uid_local = p.uid',
-    		'uid_foreign = ' . $parentUid . ' AND p.deleted = 0',
-    		'', 'mm.sorting ' . ($up?'DESC':'ASC')
+		$mms = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'mm.*',
+			'tx_commerce_products_categories_mm mm JOIN tx_commerce_products p ON mm.uid_local = p.uid',
+			'uid_foreign = ' . $parentUid . ' AND p.deleted = 0',
+			'', 'mm.sorting ' . ($up ? 'DESC' : 'ASC')
 		);
 
 		$lastMM = end($mms);
@@ -93,10 +92,12 @@ class NewProductRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 				if ($mm['uid_local'] == $meUid) {
 					$replaceNext = $tmp;
-					$tmp = $up ? ($sorting-8) : ($sorting+8);
-				} else if ($replaceNext) {
-					$tmp = $replaceNext;
-					$replaceNext = false;
+					$tmp = $up ? ($sorting - 8) : ($sorting + 8);
+				} else {
+					if ($replaceNext) {
+						$tmp = $replaceNext;
+						$replaceNext = false;
+					}
 				}
 
 				$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
@@ -105,10 +106,9 @@ class NewProductRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 					array('sorting' => $tmp)
 				);
 
-				$sorting = $up ? ($sorting-8) : ($sorting+8);
+				$sorting = $up ? ($sorting - 8) : ($sorting + 8);
 			}
 		}
-		return;
-    }
+	}
 
 }
